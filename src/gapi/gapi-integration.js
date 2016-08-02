@@ -7,7 +7,7 @@ class GApiIntegration {
   constructor () {
     console.log('CONSTRUCTING GApi!!!!')
 
-    this.CLIENT_ID = '973417990979-mttdn7ttqc1jnkv021sbndni8pl9tgje.apps.googleusercontent.com'
+    this.CLIENT_ID = process.env.CLIENT_ID
     this.SCOPES = ['email', 'profile', 'https://www.googleapis.com/auth/drive',
       'https://www.googleapis.com/auth/drive.install',
       'https://www.googleapis.com/auth/plus.login']
