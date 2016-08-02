@@ -6,7 +6,14 @@ If you want to build a VueJS app with Google Drive integration? Start here!
 
 This project is just a text editor written in VueJS uses google drive API for storage, sharing (soon) and realtime colaboration (not yet). Use it as a boilerplate or reference for your awesome project!
 
-## Done:
+## Screenshots
+
+<a href="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg"><img src="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg" width="400" ></a>
+<a href="https://cloud.githubusercontent.com/assets/2600867/17316214/6a1bf8e4-5848-11e6-8097-d5b1b6b856db.jpg"><img src="https://cloud.githubusercontent.com/assets/2600867/17316214/6a1bf8e4-5848-11e6-8097-d5b1b6b856db.jpg" width="400" ></a>
+
+## Roadmap
+
+#### Done:
 - VueJS + Vuex boilerplate;
 - [Material Design Lite](https://getmdl.io/) and [vue-mdl](http://posva.net/vue-mdl/#!/installation);
 - G+ user authentication;
@@ -14,7 +21,7 @@ This project is just a text editor written in VueJS uses google drive API for st
 - (Auto-)save file in GDrive;
 - Load File from GDrive;
  
-## TODO:
+#### TODO:
 
 - Save in folder;
 - Share file;
