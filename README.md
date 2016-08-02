@@ -73,7 +73,11 @@ Adjust the above URLs as needed for the correct hostname or path. Localhost is c
 
 ### Setup your App information
 
-Update the `CLIENT_ID` and `APPLICATION_ID` constants in `index.js` with your app's `config/prod.env.js` file.
+Copy `config/.env.example.js` to `config/.env.js`.
+``` bash
+cp config/.env.example.js config/.env.js
+```
+Update the `CLIENT_ID` and `APPLICATION_ID` constants in `config.ev.js` file. Configurations cascade from `prod` to `dev` to `test`.
 
 ## Run and deploy
 

@@ -1,5 +1,7 @@
-module.exports = {
-  NODE_ENV: '"production"',
-  CLIENT_ID: '"YOUR-CLIENT-ID"',
-  APPLICATION_ID: '"YOUR-APPLICATION-ID"'
-}
+var merge = require('webpack-merge')
+var dotEnv = require('./.env')
+
+module.exports = merge({
+  NODE_ENV: '"production"'
+},
+dotEnv.prod)
