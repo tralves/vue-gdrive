@@ -8,8 +8,11 @@ This project is just a text editor written in VueJS uses google drive API for st
 
 ## Screenshots
 
-<a href="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg"><img src="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg" width="400" ></a>
-<a href="https://cloud.githubusercontent.com/assets/2600867/17316214/6a1bf8e4-5848-11e6-8097-d5b1b6b856db.jpg"><img src="https://cloud.githubusercontent.com/assets/2600867/17316214/6a1bf8e4-5848-11e6-8097-d5b1b6b856db.jpg" width="400" ></a>
+<a href="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg"><img src="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg" width="300" ></a>
+<a href="https://cloud.githubusercontent.com/assets/2600867/17316214/6a1bf8e4-5848-11e6-8097-d5b1b6b856db.jpg"><img src="https://cloud.githubusercontent.com/assets/2600867/17316214/6a1bf8e4-5848-11e6-8097-d5b1b6b856db.jpg" width="300" ></a>
+
+## DEMO
+Try the app [here](https://tralves.github.io/vue-gdrive/)!
 
 ## Roadmap
 
@@ -47,29 +50,37 @@ First, you need to activate the Drive API for your app. You can do it by configu
 [Google Developers Console](https://console.developers.google.com/).
 
 
-- Use [this wizard](https://console.developers.google.com/start/api?id=drive) to create or select a project in the Google Developers Console and automatically enable the API.
+- Go to [https://console.developers.google.com/apis/library](https://console.developers.google.com/apis/library).
+    - Ppen the dropdown in the top bar, next to the GoogleAPIs logo.
+    - Select **Create project**.
+    - Choose the project name.
+    - Press **Create**
 - Open the **API Manager** on the left sidebar.
-- Select **Credentials** -> **New Credentials** -> **OAuth Client ID**
-- If using a new proejct, select **Configure consent screen* and fill out the form
+- Select **Credentials** -> **Create Credentials** -> **OAuth Client ID**
+- If using a new project, select **Configure consent screen* and fill out the form
     - Select an **EMAIL ADDRESS** and enter a **PRODUCT NAME** if not already set and click the Save button.
 - Select the application type *Web application**
 - List your hostname in the **Authorized JavaScript Origins** field.
 - Click the **Create** button. Note the resulting client ID and secret which you'll need later on.
 
-> The hostname cannot be `localhost`. To test from your machine, create an alias in `etc/hosts` like `127.0.0.1 mytexteditor.dev`. In this case, if you use `npm run dev`, the hostname of your application will be `mytexteditor.dev:8080`.
+> The hostname cannot be `localhost`. To test from your machine, create an alias in `etc/hosts` like `127.0.0.1 myvuegdrive.dev`. In this case, if you use `npm run dev`, the hostname of your application will be `myvuegdrive.dev:8080`.
 
 To enable integration with the Drive UI, including the sharing dialog, perform the following steps.
 
-- Select **Overview** section in **API Manager**
-- Search for 'Drive API' and click on 'Drive API' in the results
-- Click **Enable API**
-- Select the **Drive UI Integration** tab
+- Select **Library** section in **API Manager**.
+- Search for 'Drive API' and click on 'Drive API' in the results.
+- Click **Enable API**.
+- Select the **Drive UI Integration** tab.
 - Fill out the **Application Name** and upload at least one **Application Icon**.
-- Set the *Open URL** to `http://YOURHOST?file={ids}&user={userId}&action={action}`
-- Check the *Create With** option and set the **New URL** to `http://YOURHOST?user={userId}&action={action}`
-- Click **Save Changes**
+- Set the *Open URL** to `http://YOURHOST?file={ids}&user={userId}&action={action}`.
+- Check the *Creating files** option and set the **New URL** to `http://YOURHOST?user={userId}&action={action}`.
+- Fill *Default MIME types* with `application/file-xgz`.
+- Fill *Default File Extensions* with `xgz`.
+- Click **Save Changes**.
 
 Adjust the above URLs as needed for the correct hostname or path. Localhost is currently not allowed.
+
+Note the resulting application ID on top of the page.
 
 ### Setup your App information
 
@@ -77,7 +88,7 @@ Copy `config/.env.example.js` to `config/.env.js`.
 ``` bash
 cp config/.env.example.js config/.env.js
 ```
-Update the `CLIENT_ID` and `APPLICATION_ID` constants in `config.ev.js` file. Configurations cascade from `prod` to `dev` to `test`.
+Update the `CLIENT_ID` and `APPLICATION_ID` constants in `config/.env.js` file. Configurations cascade from `prod` to `dev` to `test`.
 
 ## Run and deploy
 
