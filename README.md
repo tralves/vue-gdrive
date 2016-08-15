@@ -78,6 +78,12 @@ To enable integration with the Drive UI, including the sharing dialog, perform t
 - Fill *Default File Extensions* with `xgz`.
 - Click **Save Changes**.
 
+To enable integration with the Google+ API to retrieve the user name, email and avatar, perform the following steps.
+
+- Select **Library** section in **API Manager**.
+- Search for 'Google+' and click on 'Google+ API' in the results.
+- Click **Enable**.
+
 Adjust the above URLs as needed for the correct hostname or path. Localhost is currently not allowed.
 
 Note the resulting application ID on top of the page.
