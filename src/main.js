@@ -8,6 +8,7 @@ import store from './vuex/store'
 import 'material-design-lite'
 import 'material-design-lite/material.min.css'
 import 'assets/material.cyan-amber.min.css'
+// import 'mdi/css/materialdesignicons.css'
 
 Vue.use(VueMdl)
 

@@ -52,4 +52,6 @@ export const renameFile = ({dispatch, state}, filename) => {
 
 export const loadFile = ({dispatch}, file) => {
   dispatch(types.LOAD_FILE, file)
+  window.history.pushState(this, '', '?file=' + file.metadata.id)
 }
+

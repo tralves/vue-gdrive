@@ -2,7 +2,7 @@ import MultiPartBuilder from './multipart'
 
 class GApiIntegration {
 
-/* global gapi */
+/* global gapi, google */
 
   constructor () {
     console.log('CONSTRUCTING GApi!!!!')
@@ -23,7 +23,8 @@ class GApiIntegration {
           if (gapi && gapi.client) {
             Promise.all([
               gapi.client.load('drive', 'v3'),
-              gapi.client.load('plus', 'v1')])
+              gapi.client.load('plus', 'v1'),
+              gapi.load('picker')])
               .then(() => {
                 console.log('gapi.client.load finished!!')
                 resolve()
@@ -153,6 +154,35 @@ class GApiIntegration {
         resolve(Promise.all([metadataRequest, contentRequest]))
       }).then(function (responses) {
         return {metadata: responses[0].result, content: responses[1].body}
+      })
+  };
+
+  /**
+   * Displays the Drive file picker configured for selecting text files
+   *
+   * @return {Promise} Promise that resolves with the ID of the selected file
+   */
+  showPicker () {
+    return new Promise(
+      (resolve, reject) => {
+        var view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+        view.setMimeTypes('application/file-xgz')
+        view.setSelectFolderEnabled(true)
+        view.setIncludeFolders(true)
+        var picker = new google.picker.PickerBuilder()
+          .setAppId(process.env.APPLICATION_ID)
+          .setOAuthToken(gapi.auth.getToken().access_token)
+          .addView(view)
+          .setCallback(function (data) {
+            if (data.action === 'picked') {
+              var id = data.docs[0].id
+              resolve(id)
+            } else if (data.action === 'cancel') {
+              reject()
+            }
+          })
+          .build()
+        picker.setVisible(true)
       })
   };
 }

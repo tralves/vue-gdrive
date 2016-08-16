@@ -21,16 +21,19 @@
     <nav class="mdl-navigation">
       <profile-menu></profile-menu>
       <a class="mdl-navigation__link" @click="openCreateNewXGZ">New</a>
+      <a class="mdl-navigation__link" @click="openFile">Open</a>
     </nav>
   </div>
 </template>
 
 <script>
+/* global Event */
 import _ from 'lodash'
 import autosizeInput from 'autosize-input'
 import ProfileMenu from './ProfileMenu'
-import { renameFile } from '../../vuex/actions'
+import { renameFile, loadFile } from '../../vuex/actions'
 import { STATUS_LIST } from '../../vuex/modules/xgzfile'
+import GapiIntegration from '../../gapi/gapi-integration'
 
 export default {
   components: {
@@ -38,6 +41,14 @@ export default {
   },
   data () {
     return {
+    }
+  },
+  watch: {
+    'fileName': function (val, oldVal) {
+      if (typeof this !== 'undefined') {
+        // trigger the autosize-input
+        this.$els.filename.dispatchEvent(new Event('input'))
+      }
     }
   },
   vuex: {
@@ -54,10 +65,12 @@ export default {
           case STATUS_LIST.DIRTY: return 'Not saved'
         }
       },
-      fileName: state => state.xgzfile.metadata.name
+      fileName: state => state.xgzfile.metadata.name,
+      fileId: state => state.xgzfile.metadata.id
     },
     actions: {
-      renameFile
+      renameFile,
+      loadFile
     }
   },
   methods: {
@@ -66,7 +79,7 @@ export default {
     },
 
     openCreateNewXGZ () {
-      window.open('http://exegesistool.dev:8080/', '_blank')
+      window.open('/', '_blank')
       this.closeNav()
     },
 
@@ -75,11 +88,25 @@ export default {
         let d = document.querySelector('.mdl-layout')
         if (_.findIndex(d.classList, 'is-visible')) d.MaterialLayout.toggleDrawer()
       }, 100)
+    },
+
+    openFile () {
+      GapiIntegration.showPicker()
+        .then((id) => {
+          console.log('open file:' + id)
+          if (id !== this.fileId) {
+            GapiIntegration.loadFile(id)
+            .then(file => {
+              console.log('GOT FILE!!!!!!')
+              this.loadFile(file)
+            })
+          }
+        })
+      this.closeNav()
     }
   },
 
   ready () {
-    console.log(this.$els)
     autosizeInput(this.$els.filename)
   }
 }

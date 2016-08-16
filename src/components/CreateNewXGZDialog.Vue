@@ -1,24 +1,29 @@
 <template>
-  <mdl-dialog v-ref:create_new_xgz full-width title="Create new XGZ">
+    <mdl-dialog v-ref:create_new_xgz full-width title="Create new XGZ">
     <mdl-textfield floating-label="File name" :value.sync="filename"></mdl-textfield>
     <template slot="actions">
-      <mdl-button primary raised @click="createNew()">Create</mdl-button>
+      <mdl-button primary @click="createNew()">Create</mdl-button>
+      <mdl-button @click="openFromGDrive()">... or open from Google Drive <img src={{gdriveSvg}} /></mdl-button>
     </template>
   </mdl-dialog>
 </template>
 
 <script>
-import { createNewXGZ } from '../vuex/actions'
+import { createNewXGZ, loadFile } from '../vuex/actions'
+import gdriveSvg from '../assets/google-drive.svg'
+import GapiIntegration from '../gapi/gapi-integration'
 
 export default {
   data () {
     return {
-      filename: 'New XGZ document'
+      filename: 'New XGZ document',
+      gdriveSvg
     }
   },
   vuex: {
     actions: {
-      createNewXGZ
+      createNewXGZ,
+      loadFile
     }
   },
   methods: {
@@ -29,7 +34,25 @@ export default {
     createNew () {
       this.$refs.create_new_xgz.close()
       this.createNewXGZ(this.filename)
+    },
+    openFromGDrive () {
+      this.$refs.create_new_xgz.close()
+      GapiIntegration.showPicker()
+        .then((id) => {
+          console.log('open file:' + id)
+          if (id !== this.fileId) {
+            GapiIntegration.loadFile(id)
+            .then(file => {
+              console.log('GOT FILE!!!!!!')
+              this.loadFile(file)
+            })
+          }
+        })
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  
+</style>
