@@ -16,10 +16,9 @@
         </div>
 
         <mdl-dialog v-ref:login full-width title="Hi there">
-          <p>Please log in</p>
+          <p>Please log in with your Google Drive account</p>
           <template slot="actions">
             <mdl-button primary @click="handleAuthClick">Login</mdl-button>
-            <mdl-button @click="$refs.login.close">Close</mdl-button>
           </template>
         </mdl-dialog>
         <pre id="output"></pre>
@@ -106,7 +105,6 @@ export default {
         GapiIntegration.loadFile(this.file)
           .then(file => {
             console.log('GOT FILE!!!!!!')
-            console.log(file)
             this.loadFile(file)
           })
       } else {
