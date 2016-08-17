@@ -7,9 +7,11 @@
       <span class="filestatus">{{ fileStatus }}</span>
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
+      
       <!-- Navigation. We hide it in small screens. -->
       <nav class="mdl-navigation mdl-layout--large-screen-only">
-        <profile-menu></profile-menu>
+        <mdl-button @click="openShare"><i class="material-icons">share</i> Share</mdl-button>
+        <!-- <profile-menu></profile-menu> -->
       </nav>
     </div>
   </header>
@@ -22,6 +24,7 @@
       <profile-menu></profile-menu>
       <a class="mdl-navigation__link" @click="openCreateNewXGZ">New</a>
       <a class="mdl-navigation__link" @click="openFile">Open</a>
+      <a class="mdl-navigation__link" @click="openShare">Share</a>
     </nav>
   </div>
 </template>
@@ -103,7 +106,13 @@ export default {
           }
         })
       this.closeNav()
+    },
+
+    openShare () {
+      GapiIntegration.showSharing(this.fileId)
+      this.closeNav()
     }
+
   },
 
   ready () {
@@ -114,6 +123,10 @@ export default {
 
 <style lang="scss">
 @import '../../styles/globals';
+
+.mdl-navigation > * {
+  margin-left: 20px;
+}
 
 .filename {
   border: 1px solid transparent;

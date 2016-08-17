@@ -24,7 +24,8 @@ class GApiIntegration {
             Promise.all([
               gapi.client.load('drive', 'v3'),
               gapi.client.load('plus', 'v1'),
-              gapi.load('picker')])
+              gapi.load('picker'),
+              gapi.load('drive-share')])
               .then(() => {
                 console.log('gapi.client.load finished!!')
                 resolve()
@@ -184,6 +185,18 @@ class GApiIntegration {
           .build()
         picker.setVisible(true)
       })
+  };
+
+  /**
+   * Displays the Drive sharing dialog
+   *
+   * @param {String} id ID of the file to share
+   */
+  showSharing (id) {
+    var share = new gapi.drive.share.ShareClient(process.env.APPLICATION_ID)
+    share.setOAuthToken(gapi.auth.getToken().access_token)
+    share.setItemIds([id])
+    share.showSettingsDialog()
   };
 }
 
