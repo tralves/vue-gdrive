@@ -31,7 +31,7 @@
 
 <script>
 /* global Event */
-import _ from 'lodash'
+import indexOf from 'lodash/indexOf'
 import autosizeInput from 'autosize-input'
 import ProfileMenu from './ProfileMenu'
 import { renameFile, loadFile } from '../../vuex/actions'
@@ -88,8 +88,10 @@ export default {
 
     closeNav () {
       setTimeout(() => {
-        let d = document.querySelector('.mdl-layout')
-        if (_.findIndex(d.classList, 'is-visible')) d.MaterialLayout.toggleDrawer()
+        let d = document.querySelector('.mdl-layout__drawer')
+        if (indexOf(d.classList, 'is-visible') !== -1) {
+          document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer()
+        }
       }, 100)
     },
 

@@ -3,7 +3,7 @@
     <mdl-textfield floating-label="File name" :value.sync="filename"></mdl-textfield>
     <template slot="actions">
       <mdl-button primary @click="createNew()">Create</mdl-button>
-      <mdl-button @click="openFromGDrive()">... or open from Google Drive <img v-bind:src={{gdriveSvg}} /></mdl-button>
+      <mdl-button @click="openFromGDrive()">... or open from Google Drive <img v-bind:src="gdriveSvg" /></mdl-button>
     </template>
   </mdl-dialog>
 </template>
