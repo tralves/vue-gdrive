@@ -7,7 +7,6 @@ import xgzfile from './modules/xgzfile'
 Vue.use(Vuex)
 console.log('USED VUEEEEEEEEEXXXX')
 
-Vue.config.debug = true
 const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({

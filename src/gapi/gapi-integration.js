@@ -31,7 +31,7 @@ class GApiIntegration {
                 resolve()
               })
           } else {
-            setTimeout(() => waitForApi(), 10)
+            setTimeout(() => waitForApi(), 100)
             console.log('wait for it...')
           }
         })()

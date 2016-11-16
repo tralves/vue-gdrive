@@ -1,6 +1,6 @@
 <template>
-    <mdl-dialog v-ref:create_new_xgz full-width title="Create new XGZ">
-    <mdl-textfield floating-label="File name" :value.sync="filename"></mdl-textfield>
+    <mdl-dialog ref="createNewXgz" full-width title="Create new XGZ">
+    <mdl-textfield floating-label="File name" :value="filename" id="create-filename-input"></mdl-textfield>
     <template slot="actions">
       <mdl-button primary @click="createNew()">Create</mdl-button>
       <mdl-button @click="openFromGDrive()">... or open from Google Drive <img v-bind:src="gdriveSvg" /></mdl-button>
@@ -9,6 +9,7 @@
 </template>
 
 <script>
+/* global document */
 import { createNewXGZ, loadFile } from '../vuex/actions'
 import gdriveSvg from '../assets/google-drive.svg'
 import GapiIntegration from '../gapi/gapi-integration'
@@ -33,7 +34,7 @@ export default {
     },
     createNew () {
       this.$refs.create_new_xgz.close()
-      this.createNewXGZ(this.filename)
+      this.createNewXGZ(document.querySelector('#create-filename-input').value)
     },
     openFromGDrive () {
       this.$refs.create_new_xgz.close()
@@ -48,6 +49,9 @@ export default {
             })
           }
         })
+    },
+    updateFilename ($event) {
+      this.filename = $event.value
     }
   }
 }

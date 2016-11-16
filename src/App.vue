@@ -15,7 +15,7 @@
           </div>          
         </div>
 
-        <mdl-dialog v-ref:login full-width title="Hi there">
+        <mdl-dialog ref="login" full-width title="Hi there">
           <p>Please log in with your Google Drive account</p>
           <template slot="actions">
             <mdl-button primary @click="handleAuthClick">Login</mdl-button>
@@ -24,7 +24,7 @@
         <pre id="output"></pre>
       </div>
     </main>
-    <create-new-xgz-dialog v-ref:create_new></create-new-xgz-dialog>
+    <create-new-xgz-dialog ref="createNew"></create-new-xgz-dialog>
   </div>
 </template>
 
@@ -54,7 +54,7 @@ export default {
       loadFile
     }
   },
-  attached: function () {
+  mounted: function () {
     console.log(GapiIntegration)
     let queryVars = qs.parse(window.location.search)
     console.log(queryVars)

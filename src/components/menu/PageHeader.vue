@@ -3,7 +3,7 @@
     <div class="mdl-layout__header-row">
       <!-- Title -->
       <i class="material-icons">short_text</i>
-      <input class='filename' contenteditable="true" @blur='rename' :value='fileName' v-el:filename/>
+      <input class='filename' contenteditable="true" @blur='rename' :value='fileName' ref="filename"/>
       <span class="filestatus">{{ fileStatus }}</span>
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
@@ -50,7 +50,7 @@ export default {
     'fileName': function (val, oldVal) {
       if (typeof this !== 'undefined') {
         // trigger the autosize-input
-        this.$els.filename.dispatchEvent(new Event('input'))
+        this.$refs.filename.dispatchEvent(new Event('input'))
       }
     }
   },
@@ -117,8 +117,10 @@ export default {
 
   },
 
-  ready () {
-    autosizeInput(this.$els.filename)
+  mounted () {
+    this.$nextTick(() => {
+      autosizeInput(this.$refs.filename)
+    })
   }
 }
 </script>
