@@ -7,18 +7,23 @@ Vue.use(Vuex)
 const mockedFileStore = {
   state: {
     xgzfile: {
-      contents: 'file contents'
+      content: 'file contents'
     }
   }
 }
 
-describe('TextView.vue shows file content', () => {
+var mockedStore = new Vuex.Store(mockedFileStore)
+
+describe('TextView.vue shows file content', done => {
   it('should render correct contents', () => {
     const vm = new Vue({
       template: '<div><text-view></text-view></div>',
       components: { TextView },
-      store: new Vuex.Store(mockedFileStore)
+      store: mockedStore
     }).$mount()
-    expect(vm.$el.querySelector('textarea').textContent).to.contain('')
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('textarea').textContent).to.contain('file contents')
+      done()
+    })
   })
 })
