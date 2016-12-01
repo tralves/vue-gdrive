@@ -1,32 +1,20 @@
 <template>
-  <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
-    <div class="mdl-layout__header-row">
-      <!-- Title -->
-      <i class="material-icons">short_text</i>
-      <input class='filename' contenteditable="true" @blur='rename' :value='fileName' ref="filename"/>
-      <span class="filestatus">{{ fileStatus }}</span>
-      <!-- Add spacer, to align navigation to the right -->
-      <div class="mdl-layout-spacer"></div>
-      
-      <!-- Navigation. We hide it in small screens. -->
-      <nav class="mdl-navigation mdl-layout--large-screen-only">
-        <mdl-button @click="openShare"><i class="material-icons">share</i> Share</mdl-button>
-        <!-- <profile-menu></profile-menu> -->
-      </nav>
-    </div>
-  </header>
-  <div class="mdl-layout__drawer">
-
-    <span class="mdl-layout-title">
-      
-    </span>
-    <nav class="mdl-navigation">
-      <profile-menu></profile-menu>
-      <a class="mdl-navigation__link" @click="openCreateNewXGZ">New</a>
-      <a class="mdl-navigation__link" @click="openFile">Open</a>
-      <a class="mdl-navigation__link" @click="openShare">Share</a>
-    </nav>
-  </div>
+    <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+      <div class="mdl-layout__header-row">
+        <!-- Title -->
+        <i class="material-icons">short_text</i>
+        <input class='filename' contenteditable="true" @blur='rename' :value='fileName' ref="filename"/>
+        <span class="filestatus">{{ fileStatus }}</span>
+        <!-- Add spacer, to align navigation to the right -->
+        <div class="mdl-layout-spacer"></div>
+        
+        <!-- Navigation. We hide it in small screens. -->
+        <nav class="mdl-navigation mdl-layout--large-screen-only">
+          <mdl-button @click="openShare"><i class="material-icons">share</i> Share</mdl-button>
+          <!-- <profile-menu></profile-menu> -->
+        </nav>
+      </div>
+    </header>
 </template>
 
 <script>

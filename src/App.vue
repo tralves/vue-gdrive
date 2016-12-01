@@ -1,7 +1,19 @@
-
 <template>
+<div id="app">
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <page-header></page-header>
+    <div class="mdl-layout__drawer">
+
+      <span class="mdl-layout-title">
+        
+      </span>
+      <nav class="mdl-navigation">
+        <profile-menu></profile-menu>
+        <a class="mdl-navigation__link" @click="openCreateNewXGZ()">New</a>
+        <!--a class="mdl-navigation__link" @click="openFile">Open</a>
+        <a class="mdl-navigation__link" @click="openShare">Share</a-->
+      </nav>
+    </div>
     <main class="mdl-layout__content mdl-color--grey-100">
       <div class="page-content">
 
@@ -24,8 +36,9 @@
         <pre id="output"></pre>
       </div>
     </main>
-    <create-new-xgz-dialog ref="createNew"></create-new-xgz-dialog>
+    <create-new-xgz-dialog ref="create_new"></create-new-xgz-dialog>
   </div>
+</div>
 </template>
 
 <script>

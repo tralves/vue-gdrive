@@ -1,9 +1,9 @@
 <template>
-    <mdl-dialog ref="createNewXgz" full-width title="Create new XGZ">
+    <mdl-dialog ref="create_new_xgz" full-width title="Create new XGZ">
     <mdl-textfield floating-label="File name" :value="filename" id="create-filename-input"></mdl-textfield>
     <template slot="actions">
-      <mdl-button primary @click="createNew()">Create</mdl-button>
-      <mdl-button @click="openFromGDrive()">... or open from Google Drive <img v-bind:src="gdriveSvg" /></mdl-button>
+      <mdl-button primary @click.native="createNew()">Create</mdl-button>
+      <mdl-button @click.native="openFromGDrive()">... or open from Google Drive <img v-bind:src="gdriveSvg" /></mdl-button>
     </template>
   </mdl-dialog>
 </template>

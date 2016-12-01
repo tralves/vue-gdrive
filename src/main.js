@@ -13,12 +13,10 @@ import 'assets/material.cyan-amber.min.css'
 Vue.use(VueMdl)
 
 /* eslint-disable no-new */
+
 new Vue({
   store,
-  el: 'body',
-  components: {
-    App
-  },
-  data: {
-  }
+  el: '#app',
+  template: '<App/>',
+  components: { App }
 })
