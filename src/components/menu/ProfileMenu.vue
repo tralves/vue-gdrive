@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import user from '../../stores/User'
+import user from '../../stores/user'
 
 export default {
   data () {

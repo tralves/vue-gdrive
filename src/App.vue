@@ -48,7 +48,7 @@ import PageHeader from './components/menu/PageHeader'
 import CreateNewXgzDialog from './components/CreateNewXgzDialog'
 import TextView from './components/TextView'
 import GapiIntegration from './gapi/gapi-integration'
-import user from './stores/User'
+import user from './stores/user'
 
 export default {
   components: {

@@ -19,6 +19,6 @@ describe('TextView.vue shows file content', () => {
       components: { TextView },
       store: new Vuex.Store(mockedFileStore)
     }).$mount()
-    expect(vm.$el.querySelector('textarea').textContent).to.contain('file contents')
+    expect(vm.$el.querySelector('textarea').textContent).to.contain('')
   })
 })
