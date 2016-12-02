@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import TextView from 'src/components/TextView'
+// import TextView from 'src/components/TextView'
 
 Vue.use(Vuex)
 
@@ -14,15 +14,39 @@ const mockedFileStore = {
 
 var mockedStore = new Vuex.Store(mockedFileStore)
 
-describe('TextView.vue shows file content', done => {
-  it('should render correct contents', () => {
+describe('TextView.vue shows file content', () => {
+  var TextViewInjector = require('!!vue?inject!src/components/TextView')
+  var ActionsStub = sinon.stub()
+  var TextView = TextViewInjector({
+    'src/vuex/actions': {
+      'editContent': ActionsStub
+    }
+  })
+
+  it('should render correct contents', done => {
     const vm = new Vue({
       template: '<div><text-view></text-view></div>',
       components: { TextView },
       store: mockedStore
     }).$mount()
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('textarea').textContent).to.contain('file contents')
+      expect(vm.$el.querySelector('textarea').value).to.contain('file contents')
+      done()
+    })
+  })
+
+  it('send content to store on edit', done => {
+    const vm = new Vue({
+      template: '<div><text-view></text-view></div>',
+      components: { TextView },
+      store: mockedStore
+    }).$mount()
+
+    /* global Event */
+    Vue.nextTick(() => {
+      vm.$el.querySelector('textarea').value = 'more file contents'
+      vm.$el.querySelector('textarea').dispatchEvent(new Event('input'))
+      expect(ActionsStub.called).is.true
       done()
     })
   })

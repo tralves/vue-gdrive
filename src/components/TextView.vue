@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { editContent } from '../vuex/actions'
+import { editContent } from 'src/vuex/actions'
 export default {
   vuex: {
     getters: {
