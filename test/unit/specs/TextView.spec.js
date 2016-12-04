@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import TextView from 'src/components/TextView'
 
 Vue.use(Vuex)
 
@@ -46,7 +45,9 @@ describe('TextView.vue shows file content', () => {
     Vue.nextTick(() => {
       vm.$el.querySelector('textarea').value = 'more file contents'
       vm.$el.querySelector('textarea').dispatchEvent(new Event('input'))
-      expect(ActionsStub.called).is.true
+      expect(ActionsStub)
+        .calledWith(sinon.match.any, 'more file contents')
+        .calledOnce
       done()
     })
   })

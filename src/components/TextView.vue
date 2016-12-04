@@ -1,5 +1,5 @@
 <template>
-  <textarea :value="fileContent" @input="editContent"></textarea>
+  <textarea :value="fileContent" @input="editContent($event.target.value)"></textarea>
 </template>
 
 <script>
