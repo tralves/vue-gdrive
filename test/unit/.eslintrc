@@ -4,6 +4,11 @@
   },
   "globals": {
     "expect": true,
-    "sinon": true
+    "sinon": true,
+    "assert": true
+  },
+  "rules": {
+    "no-native-reassign": ["error", {"exceptions": ["Promise"]}],
+    "no-global-assign": ["error", {"exceptions": ["Promise"]}]
   }
 }

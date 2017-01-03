@@ -9,7 +9,7 @@
       </span>
       <nav class="mdl-navigation">
         <profile-menu></profile-menu>
-        <a class="mdl-navigation__link" @click="openCreateNewXGZ()">New</a>
+        <a class="mdl-navigation__link" @click="openCreateNewFile()">New</a>
         <!--a class="mdl-navigation__link" @click="openFile">Open</a>
         <a class="mdl-navigation__link" @click="openShare">Share</a-->
       </nav>
@@ -36,7 +36,7 @@
         <pre id="output"></pre>
       </div>
     </main>
-    <create-new-xgz-dialog ref="create_new"></create-new-xgz-dialog>
+    <create-new-file-dialog ref="create_new_file"></create-new-file-dialog>
   </div>
 </div>
 </template>
@@ -45,8 +45,9 @@
 import qs from 'querystringify'
 import { loadFile } from './vuex/actions'
 import PageHeader from './components/menu/PageHeader'
-import CreateNewXgzDialog from './components/CreateNewXgzDialog'
+import CreateNewFileDialog from './components/CreateNewFileDialog'
 import TextView from './components/TextView'
+import ProfileMenu from './components/menu/ProfileMenu'
 import GapiIntegration from './gapi/gapi-integration'
 import user from './stores/user'
 
@@ -54,7 +55,8 @@ export default {
   components: {
     PageHeader,
     TextView,
-    'create-new-xgz-dialog': CreateNewXgzDialog
+    ProfileMenu,
+    'create-new-file-dialog': CreateNewFileDialog
   },
   data: function () {
     return {
@@ -121,12 +123,12 @@ export default {
             this.loadFile(file)
           })
       } else {
-        this.openCreateNewXGZ()
+        this.openCreateNewFile()
       }
     },
 
-    openCreateNewXGZ () {
-      this.$refs.create_new.openDialog()
+    openCreateNewFile () {
+      this.$refs.create_new_file.openDialog()
     }
   }
 }

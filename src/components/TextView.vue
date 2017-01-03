@@ -3,15 +3,18 @@
 </template>
 
 <script>
-import { editContent } from 'src/vuex/actions'
+import { mapState, mapActions } from 'vuex'
+
 export default {
-  vuex: {
-    getters: {
-      fileContent: state => state.xgzfile.content
-    },
-    actions: {
-      editContent
-    }
+  computed: {
+    ...mapState({
+      fileContent: state => state.file.content
+    })
+  },
+  methods: {
+    ...mapActions([
+      'editContent'
+    ])
   }
 }
 </script>

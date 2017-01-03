@@ -1,18 +1,19 @@
 // vuex/store.js
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import xgzfile from modules
-import xgzfile from './modules/xgzfile'
+import file from './modules/file'
+import * as actions from './actions'
 
 Vue.use(Vuex)
-console.log('USED VUEEEEEEEEEXXXX')
+console.log('Using Vuex')
 
 const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
+  actions,
   // combine sub modules
   modules: {
-    xgzfile
+    file
   },
   strict: debug
 })

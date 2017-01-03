@@ -5,13 +5,14 @@
             "folder_exclude_patterns":
             [
                 "node_modules",
-                //"build",
-                "dist"
+                "build",
+                "dist",
+                "test/unit/coverage"
             ],
 			"path": "."
 		}
 	],
-	"Sublimelinter":
+	"SublimeLinter":
     {
         "linters": {
             "jshint": {

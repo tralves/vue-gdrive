@@ -15,13 +15,14 @@
   "dependencies": {
     "autosize-input": "^0.2.1",
     "babel-runtime": "^6.0.0",
+    "es6-promise": "^4.0.5",
     "lodash": "^4.13.1",
     "material-design-lite": "^1.2.1",
     "querystringify": "0.0.3",
     "string-replace-webpack-plugin": "0.0.3",
     "vue": "^2.0.1",
     "vue-mdl": "next",
-    "vuex": "^1.0.0-rc.2"
+    "vuex": "^2.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",

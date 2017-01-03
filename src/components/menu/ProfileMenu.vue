@@ -1,5 +1,4 @@
 <template>
-
 	<div class="demo-avatar-dropdown">
     <img class='avatar' v-bind:src="user.image"/>
   	<span>{{ user.email }}</span>

@@ -49,6 +49,7 @@ class GApiIntegration {
         gapi.auth.authorize(
           this.buildAuthRequest(immediate, user),
           (authResult) => {
+            console.log('RESULT!!!!!!!!')
             if (authResult && !authResult.error) {
               console.log('resolved!')
               resolve()
@@ -88,23 +89,23 @@ class GApiIntegration {
     })
   }
 
-  saveXgzFile (xgzFile, filename) {
+  saveFile (file, filename) {
     var path
     var method
 
-    if (xgzFile.metadata.id) {
-      path = '/upload/drive/v3/files/' + encodeURIComponent(xgzFile.metadata.id)
+    if (file.metadata.id) {
+      path = '/upload/drive/v3/files/' + encodeURIComponent(file.metadata.id)
       method = 'PATCH'
     } else {
       path = '/upload/drive/v3/files'
       method = 'POST'
     }
 
-    const metadata = { mimeType: xgzFile.metadata.mimeType, name: (filename || xgzFile.metadata.name) }
+    const metadata = { mimeType: file.metadata.mimeType, name: (filename || file.metadata.name) }
 
     const multipart = new MultiPartBuilder()
         .append('application/json', JSON.stringify(metadata))
-        .append(xgzFile.metadata.mimeType, xgzFile.content)
+        .append(file.metadata.mimeType, file.content)
         .finish()
 
     return gapi.client.request({
@@ -167,7 +168,7 @@ class GApiIntegration {
     return new Promise(
       (resolve, reject) => {
         var view = new google.picker.DocsView(google.picker.ViewId.DOCS)
-        view.setMimeTypes('application/file-xgz')
+        view.setMimeTypes(process.env.DEFAULT_MIMETYPE)
         view.setSelectFolderEnabled(true)
         view.setIncludeFolders(true)
         var picker = new google.picker.PickerBuilder()

@@ -74,8 +74,8 @@ To enable integration with the Drive UI, including the sharing dialog, perform t
 - Fill out the **Application Name** and upload at least one **Application Icon**.
 - Set the *Open URL** to `http://YOURHOST?file={ids}&user={userId}&action={action}`.
 - Check the *Creating files** option and set the **New URL** to `http://YOURHOST?user={userId}&action={action}`.
-- Fill *Default MIME types* with `application/file-xgz`.
-- Fill *Default File Extensions* with `xgz`.
+- Fill *Default MIME types* with `text/markdown` and `text/plain`.
+- Fill *Default File Extensions* with `md`.
 - Click **Save Changes**.
 
 To enable integration with the Google+ API to retrieve the user name, email and avatar, perform the following steps.

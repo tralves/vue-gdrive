@@ -19,21 +19,24 @@
 
 <script>
 /* global Event */
+import { mapState } from 'vuex'
 import indexOf from 'lodash/indexOf'
 import autosizeInput from 'autosize-input'
-import ProfileMenu from './ProfileMenu'
 import { renameFile, loadFile } from '../../vuex/actions'
-import { STATUS_LIST } from '../../vuex/modules/xgzfile'
+import { STATUS_LIST } from '../../vuex/modules/file'
 import GapiIntegration from '../../gapi/gapi-integration'
 
 export default {
   components: {
-    ProfileMenu
   },
   data () {
     return {
     }
   },
+  computed: mapState({
+    fileName: state => state.file.metadata.name,
+    fileId: state => state.file.metadata.id
+  }),
   watch: {
     'fileName': function (val, oldVal) {
       if (typeof this !== 'undefined') {
@@ -45,19 +48,14 @@ export default {
   vuex: {
     getters: {
       fileStatus: state => {
-        console.log(state.xgzfile.status)
-        console.log(STATUS_LIST.SAVED)
-
-        switch (state.xgzfile.status) {
+        switch (state.file.status) {
           case STATUS_LIST.INTIAL: return 'New file'
           case STATUS_LIST.SAVING: return 'Saving...'
-          case STATUS_LIST.SAVED: return 'Last change on ' + state.xgzfile.metadata.modifiedTime
+          case STATUS_LIST.SAVED: return 'Last change on ' + state.file.metadata.modifiedTime
           case STATUS_LIST.NOT_SAVED: return 'Could not save to drive'
           case STATUS_LIST.DIRTY: return 'Not saved'
         }
-      },
-      fileName: state => state.xgzfile.metadata.name,
-      fileId: state => state.xgzfile.metadata.id
+      }
     },
     actions: {
       renameFile,
@@ -69,7 +67,7 @@ export default {
       this.renameFile(e.target.value)
     },
 
-    openCreateNewXGZ () {
+    openCreateNewFile () {
       window.open('/', '_blank')
       this.closeNav()
     },

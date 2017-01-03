@@ -4,6 +4,30 @@
 		"selected_items":
 		[
 			[
+				"edit",
+				"editContent"
+			],
+			[
+				"dispa",
+				"dispatchEvent\t(PageHeader.vue)"
+			],
+			[
+				"text",
+				"textarea"
+			],
+			[
+				"tr",
+				"true"
+			],
+			[
+				"Ac",
+				"ActionsStub"
+			],
+			[
+				"mo",
+				"mockedStore"
+			],
+			[
 				"T",
 				"TextView"
 			],
@@ -272,10 +296,6 @@
 				"components\t(main.js)"
 			],
 			[
-				"text",
-				"textfield\t(RgbLeds.vue)"
-			],
-			[
 				"wid",
 				"width"
 			],
@@ -494,64 +514,62 @@
 			[
 				"class",
 				"classification"
-			],
-			[
-				"pr",
-				"propertiesToCheck"
-			],
-			[
-				"gene",
-				"generateArtifact\t(GenerateCertificate.php)"
-			],
-			[
-				"STA",
-				"STATUS_ONGOING\t(Activity.php)"
-			],
-			[
-				"upgrade",
-				"upgradeAccount\t(AccountController.php)"
-			],
-			[
-				"upda",
-				"upgrade"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"contents": "Searching 44 files for \"openDialog\"\n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/App.vue:\n  127  \n  128      openCreateNewXGZ () {\n  129:       this.$refs.create_new.openDialog()\n  130      }\n  131    }\n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/CreateNewXGZDialog.Vue:\n   29    },\n   30    methods: {\n   31:     openDialog () {\n   32        this.filename = 'New XGZ document'\n   33        this.$refs.create_new_xgz.open()\n\n2 matches across 2 files\n",
+			"file": "src/App.vue",
 			"settings":
 			{
-				"buffer_size": 508,
+				"buffer_size": 3664,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "<template>\n    <header class=\"mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600\">\n      <div class=\"mdl-layout__header-row\">\n        <!-- Title -->\n        <i class=\"material-icons\">short_text</i>\n        <input class='filename' contenteditable=\"true\" @blur='rename' :value='fileName' ref=\"filename\"/>\n        <span class=\"filestatus\">{{ fileStatus }}</span>\n        <!-- Add spacer, to align navigation to the right -->\n        <div class=\"mdl-layout-spacer\"></div>\n        \n        <!-- Navigation. We hide it in small screens. -->\n        <nav class=\"mdl-navigation mdl-layout--large-screen-only\">\n          <mdl-button @click=\"openShare\"><i class=\"material-icons\">share</i> Share</mdl-button>\n          <!-- <profile-menu></profile-menu> -->\n        </nav>\n      </div>\n    </header>\n</template>\n\n<script>\n/* global Event */\nimport { mapState } from 'vuex'\nimport indexOf from 'lodash/indexOf'\nimport autosizeInput from 'autosize-input'\nimport { renameFile, loadFile } from '../../vuex/actions'\nimport { STATUS_LIST } from '../../vuex/modules/xgzfile'\nimport GapiIntegration from '../../gapi/gapi-integration'\n\nexport default {\n  components: {\n  },\n  data () {\n    return {\n    }\n  },\n  computed: mapState({\n    fileName: state => state.xgzfile.metadata.name,\n    fileId: state => state.xgzfile.metadata.id\n  }),\n  watch: {\n    'fileName': function (val, oldVal) {\n      if (typeof this !== 'undefined') {\n        // trigger the autosize-input\n        this.$refs.filename.dispatchEvent(new Event('input'))\n      }\n    }\n  },\n  vuex: {\n    getters: {\n      fileStatus: state => {\n        switch (state.xgzfile.status) {\n          case STATUS_LIST.INTIAL: return 'New file'\n          case STATUS_LIST.SAVING: return 'Saving...'\n          case STATUS_LIST.SAVED: return 'Last change on ' + state.xgzfile.metadata.modifiedTime\n          case STATUS_LIST.NOT_SAVED: return 'Could not save to drive'\n          case STATUS_LIST.DIRTY: return 'Not saved'\n        }\n      }\n    },\n    actions: {\n      renameFile,\n      loadFile\n    }\n  },\n  methods: {\n    rename (e) {\n      this.renameFile(e.target.value)\n    },\n\n    openCreateNewXGZ () {\n      window.open('/', '_blank')\n      this.closeNav()\n    },\n\n    closeNav () {\n      setTimeout(() => {\n        let d = document.querySelector('.mdl-layout__drawer')\n        if (indexOf(d.classList, 'is-visible') !== -1) {\n          document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer()\n        }\n      }, 100)\n    },\n\n    openFile () {\n      GapiIntegration.showPicker()\n        .then((id) => {\n          console.log('open file:' + id)\n          if (id !== this.fileId) {\n            GapiIntegration.loadFile(id)\n            .then(file => {\n              console.log('GOT FILE!!!!!!')\n              this.loadFile(file)\n            })\n          }\n        })\n      this.closeNav()\n    },\n\n    openShare () {\n      GapiIntegration.showSharing(this.fileId)\n      this.closeNav()\n    }\n\n  },\n\n  mounted () {\n    this.$nextTick(() => {\n      autosizeInput(this.$refs.filename)\n    })\n  }\n}\n</script>\n\n<style lang=\"scss\">\n@import '../../styles/globals';\n\n.mdl-navigation > * {\n  margin-left: 20px;\n}\n\n.filename {\n  border: 1px solid transparent;\n  border-radius: 2px!important;\n  font-size: 18px;\n  height: 20px;\n  line-height: 22px;\n  margin: 0;\n  min-width: 1px;\n  padding: 2px 7px;\n  background-color: transparent;\n\n  &:focus {\n    border: 1px solid $secondary-color;\n    outline: $secondary-color auto 5px;\n  }\n  &:hover {\n    border: 1px solid $secondary-color;\n  }\n}\n\n.filestatus {\n  margin-left: 10px;\n  height: 20px;\n  line-height: 22px;\n}\n\n.mdl-layout__drawer-button {\n  color: $secondary-color;\n  background-color: $primary-color;\n}\n\n</style>\n",
+			"file": "src/components/menu/PageHeader.vue",
+			"file_size": 3714,
+			"file_write_time": 131254667090000000,
+			"settings":
+			{
+				"buffer_size": 3714,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/vuex/actions.js",
+			"settings":
+			{
+				"buffer_size": 1497,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Searching 79 files for \"renameFile\"\n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/menu/PageHeader.vue:\n   23  import indexOf from 'lodash/indexOf'\n   24  import autosizeInput from 'autosize-input'\n   25: import { renameFile, loadFile } from '../../vuex/actions'\n   26  import { STATUS_LIST } from '../../vuex/modules/xgzfile'\n   27  import GapiIntegration from '../../gapi/gapi-integration'\n   ..\n   59      },\n   60      actions: {\n   61:       renameFile,\n   62        loadFile\n   63      }\n   ..\n   65    methods: {\n   66      rename (e) {\n   67:       this.renameFile(e.target.value)\n   68      },\n   69  \n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/vuex/actions.js:\n   43  }\n   44  \n   45: export const renameFile = ({dispatch, state}, filename) => {\n   46    console.log('renaming XGZ')\n   47    dispatch(types.RENAME_FILE, filename)\n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit/coverage/lcov-report/src/components/menu/PageHeader.vue.html:\n  291  import indexOf from 'lodash/indexOf'\n  292  import autosizeInput from 'autosize-input'\n  293: import { renameFile, loadFile } from '../../vuex/actions'\n  294  import { STATUS_LIST } from '../../vuex/modules/xgzfile'\n  295  import GapiIntegration from '../../gapi/gapi-integration'\n  ...\n  328      },\n  329      actions: {\n  330:       renameFile,\n  331        loadFile\n  332      }\n  ...\n  334    methods: <span class=\"fstat-no\" title=\"function not covered\" ><span class=\"fstat-no\" title=\"function not covered\" ><span class=\"fstat-no\" title=\"function not covered\" ><span class=\"fstat-no\" title=\"function not covered\" ><span class=\"fstat-no\" title=\"function not covered\" >{</span></span></span></span></span>\n  335      rename (e) {\n  336: <span class=\"cstat-no\" title=\"statement not covered\" >      t</span>his.renameFile(e.target.value)\n  337      },\n  338  &nbsp;\n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit/coverage/lcov-report/src/vuex/actions.js.html:\n  208  }\n  209  &nbsp;\n  210: export const renameFile = <span class=\"fstat-no\" title=\"function not covered\" >({dispatch, state}, filename) =&gt; <span class=\"cstat-no\" title=\"statement not covered\" >{</span></span>\n  211  <span class=\"cstat-no\" title=\"statement not covered\" >  c</span>onsole.log('renaming XGZ')\n  212  <span class=\"cstat-no\" title=\"statement not covered\" >  d</span>ispatch(types.RENAME_FILE, filename)\n\n8 matches across 4 files\n\n\nSearching 79 files for \"google-drive.svg\"\n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/CreateNewXgzDialog.vue:\n   12  /* global document */\n   13  import { createNewXGZ, loadFile } from '../vuex/actions'\n   14: import gdriveSvg from '../assets/google-drive.svg'\n   15  import GapiIntegration from '../gapi/gapi-integration'\n   16  \n\n/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit/coverage/lcov-report/src/components/CreateNewXgzDialog.vue.html:\n  173  /* global document */\n  174  import { createNewXGZ, loadFile } from '../vuex/actions'\n  175: import gdriveSvg from '../assets/google-drive.svg'\n  176  import GapiIntegration from '../gapi/gapi-integration'\n  177  &nbsp;\n\n2 matches across 2 files\n",
+			"settings":
+			{
+				"buffer_size": 3235,
 				"line_ending": "Unix",
 				"name": "Find Results",
 				"scratch": true
 			}
 		},
 		{
-			"file": "src/App.vue",
+			"file": "src/components/CreateNewXgzDialog.vue",
 			"settings":
 			{
-				"buffer_size": 3591,
-				"encoding": "UTF-8",
+				"buffer_size": 1620,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "test/unit/specs/TextView.spec.js",
+			"file": ".eslintrc.js",
 			"settings":
 			{
-				"buffer_size": 570,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/components/TextView.vue",
-			"settings":
-			{
-				"buffer_size": 405,
+				"buffer_size": 426,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -560,7 +578,8 @@
 			"file": "src/vuex/modules/xgzfile.js",
 			"settings":
 			{
-				"buffer_size": 1269,
+				"buffer_size": 1284,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
@@ -568,7 +587,7 @@
 			"file": "package.json",
 			"settings":
 			{
-				"buffer_size": 2738,
+				"buffer_size": 2799,
 				"line_ending": "Unix"
 			}
 		}
@@ -580,10 +599,18 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 140.0,
-		"last_filter": "remove",
+		"height": 400.0,
+		"last_filter": "reset",
 		"selected_items":
 		[
+			[
+				"reset",
+				"Git: Reset (unstage) Current File"
+			],
+			[
+				"check",
+				"Git: Checkout"
+			],
 			[
 				"remove",
 				"Package Control: Remove Package"
@@ -757,29 +784,46 @@
 	"expanded_folders":
 	[
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/config",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/assets",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/menu",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/stores",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/styles",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/vuex",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/vuex/modules",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/static",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit/specs"
 	],
 	"file_history":
 	[
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/CreateNewXGZDialog.Vue",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit/coverage/lcov-report/src/components/menu/PageHeader.vue.html",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/menu/PageHeader.vue",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/vuex/store.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit/specs/TextView.spec.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/vuex/actions.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/TextView.vue",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/menu/ProfileMenu.vue",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/package.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/vue-gdrive.sublime-project",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/webpack.base.conf.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/CreateNewXgzDialog.vue",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/gapi/gapi-integration.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/test/unit/coverage/lcov-report/src/App.vue.html",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/App.vue",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/.babelrc",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/vue-gdrive.sublime-project",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/build.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/check-versions.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/dev-server.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/webpack.dev.conf.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/webpack.prod.conf.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/utils.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/config/index.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/build/webpack.base.conf.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/stores/user.js",
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/CreateNewXGZDialog.Vue",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/index.html",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/main.js",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/assets/material.cyan-amber.min.css",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive/src/components/menu/PageHeader.vue",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend_2/.README.md.swp",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend/js/services/constants/app_settings.js",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend/www/templates/home/premium_expired.html",
@@ -880,25 +924,7 @@
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-qualifica/js/controllers/app_controller.js",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-qualifica/js/config/routes.js",
 		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-qualifica/platforms/android/CordovaLib/src/org/apache/cordova/AuthenticationToken.java",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/app/Console/Commands/SynchronizeConfig.php",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/tests/OAuth/OAuthTest.php",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/app/Providers/AppServiceProvider.php",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/tests/TestCase.php",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/config/filesystems.php",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/vendor/illuminate/filesystem/FilesystemAdapter.php",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/tests/NoDBTestCase.php",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/www/i18n/i18n-finances-pt-BR.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/www/i18n/i18n-pt-BR.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/ionic.project",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/js/services/constants/app_settings.js.tim-meu-negocio",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/www/i18n/i18n-en.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/plugins/fetch.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/platforms/android/assets/www/i18n/i18n-finances-pt-BR.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/platforms/android/android.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/platforms/android/assets/www/i18n/i18n-en.json",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/js/services/contents/download-images.js",
-		"/Users/tiagoalves/Library/Application Support/Sublime Text 3/Packages/User/phpfmt.sublime-settings",
-		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend-tim-financas/config.xml"
+		"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/mlumen_api/app/Console/Commands/SynchronizeConfig.php"
 	],
 	"find":
 	{
@@ -933,6 +959,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"google-drive.svg",
+			"renameFile",
+			"id",
+			"fileId",
+			"new Vuex",
+			"creating new xgz",
+			"profile-menu",
+			"e.target.value",
+			"ActionsMock",
+			"getters",
+			"textarea",
+			"CreateNewXGZDialog",
+			"CreateNewXgzDialog",
+			"sass",
+			"User",
 			"App",
 			"Hello",
 			"hello",
@@ -1045,22 +1086,7 @@
 			"ct-sentence-completing",
 			">>>>>>> dev",
 			"title",
-			"fix-ion-nav-bar",
-			"ion-nav-bar.bar-royal",
-			"ion-nav-bar",
-			"roya",
-			"roy",
-			"ionicFilterBarConfigProvider",
-			"ionicFilterBarConfigProvider[",
-			"ionicFilterBarConfigProvider",
-			"roy",
-			"ion-filter-bar",
-			"showFilterBar",
-			"theme",
-			"roy",
-			"button-dark-text",
-			"bar-dark-text",
-			"filter-bar-style"
+			"fix-ion-nav-bar"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1090,15 +1116,421 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 5,
 			"sheets":
 			[
 				{
 					"buffer": 0,
+					"file": "src/App.vue",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 508,
+						"buffer_size": 3664,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1015,
+								1015
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"allowed_colors":
+								[
+									"webcolors",
+									"rgba",
+									"rgb",
+									"hex",
+									"hsla",
+									"hex_compressed",
+									"hsl"
+								],
+								"compress_hex_output": true,
+								"current_ext": ".vue",
+								"current_syntax": "Vuejs Complete Package/vue",
+								"enabled": true,
+								"last_updated": 1482240526.0,
+								"scan_completion_scopes":
+								[
+								],
+								"scan_scopes":
+								[
+									"meta.property-list.css -support.type.property-name.css -comment -string",
+									"meta.property-value.css -comment -string",
+									"meta.value.css -comment -string",
+									"meta.tag.inline.any.html string.quoted",
+									"meta.tag.any.html meta.attribute-with-value.style.html"
+								],
+								"use_hex_argb": false
+							},
+							"git_gutter_enabled": true,
+							"syntax": "Packages/Vuejs Complete Package/vue.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 16.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/components/menu/PageHeader.vue",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3714,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3064,
+								3069
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"allowed_colors":
+								[
+									"webcolors",
+									"rgba",
+									"rgb",
+									"hex",
+									"hsla",
+									"hex_compressed",
+									"hsl"
+								],
+								"compress_hex_output": true,
+								"current_ext": ".vue",
+								"current_syntax": "Vuejs Complete Package/vue",
+								"enabled": true,
+								"last_updated": 1482240526.0,
+								"scan_completion_scopes":
+								[
+								],
+								"scan_scopes":
+								[
+									"meta.property-list.css -support.type.property-name.css -comment -string",
+									"meta.property-value.css -comment -string",
+									"meta.value.css -comment -string",
+									"meta.tag.inline.any.html string.quoted",
+									"meta.tag.any.html meta.attribute-with-value.style.html"
+								],
+								"use_hex_argb": false
+							},
+							"git_gutter_enabled": true,
+							"syntax": "Packages/Vuejs Complete Package/vue.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1556.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/vuex/actions.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1497,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1143,
+								1153
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content"
+							],
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".js",
+								"current_syntax": "JavaScript/JavaScript",
+								"enabled": false,
+								"last_updated": 1482240526.0
+							},
+							"git_gutter_enabled": true,
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 106.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3235,
 						"regions":
 						{
 							"match":
@@ -1107,12 +1539,44 @@
 								"regions":
 								[
 									[
-										189,
-										199
+										246,
+										256
 									],
 									[
-										372,
-										382
+										479,
+										489
+									],
+									[
+										594,
+										604
+									],
+									[
+										765,
+										775
+									],
+									[
+										1143,
+										1153
+									],
+									[
+										1376,
+										1386
+									],
+									[
+										1852,
+										1862
+									],
+									[
+										2071,
+										2081
+									],
+									[
+										2755,
+										2771
+									],
+									[
+										3115,
+										3131
 									]
 								],
 								"scope": ""
@@ -1121,8 +1585,8 @@
 						"selection":
 						[
 							[
-								193,
-								193
+								2737,
+								2737
 							]
 						],
 						"settings":
@@ -1132,94 +1596,100 @@
 							{
 								"close":
 								{
-									"1":
-									[
-										213,
-										214
-									]
 								},
 								"icon":
 								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"brackethighlighter.default"
-									]
 								},
 								"open":
 								{
-									"1":
-									[
-										152,
-										153
-									]
 								},
 								"unmatched":
 								{
+									"1":
+									[
+										2227,
+										2228
+									]
 								}
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
-								"bh_unmatched_content"
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
 							],
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": null,
+								"current_syntax": "Default/Find Results",
+								"enabled": false,
+								"last_updated": 1482240526.0
+							},
 							"default_dir": "/Volumes/MacOSXExt/Users/tiagoalves/Projects/github/vue-gdrive",
 							"detect_indentation": false,
+							"git_gutter_enabled": false,
 							"line_numbers": false,
-							"output_tag": 1,
+							"output_tag": 2,
 							"result_base_dir": "",
 							"result_file_regex": "^([^ \t].*):$",
 							"result_line_regex": "^ +([0-9]+):",
@@ -1227,27 +1697,27 @@
 							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1037.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "src/App.vue",
+					"buffer": 4,
+					"file": "src/components/CreateNewXgzDialog.vue",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3591,
+						"buffer_size": 1620,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3578,
-								3578
+								393,
+								402
 							]
 						],
 						"settings":
@@ -1270,11 +1740,31 @@
 							},
 							"bracket_highlighter.regions":
 							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
@@ -1285,6 +1775,11 @@
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
@@ -1295,260 +1790,51 @@
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
-								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
+								"bh_default_content"
 							],
-							"syntax": "Packages/Vuejs Complete Package/vue.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1549.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "test/unit/specs/TextView.spec.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 570,
-						"regions":
-						{
-						},
-						"selection":
-						[
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
 							[
-								570,
-								570
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
+							],
+							"color_helper.preview_meta":
 							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
 							},
-							"bracket_highlighter.regions":
-							[
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/components/TextView.vue",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 405,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								265,
-								276
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
+							"color_helper.scan":
 							{
-								"close":
-								{
-									"1":
-									[
-										281,
-										282
-									]
-								},
-								"icon":
-								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"brackethighlighter.default"
-									]
-								},
-								"open":
-								{
-									"1":
-									[
-										257,
-										258
-									]
-								},
-								"unmatched":
-								{
-								}
+								"allowed_colors":
+								[
+									"webcolors",
+									"rgba",
+									"rgb",
+									"hex",
+									"hsla",
+									"hsl",
+									"hex_compressed"
+								],
+								"compress_hex_output": true,
+								"current_ext": ".vue",
+								"current_syntax": "Vuejs Complete Package/vue",
+								"enabled": true,
+								"last_updated": 1482847317.36,
+								"scan_completion_scopes":
+								[
+								],
+								"scan_scopes":
+								[
+									"meta.property-list.css -support.type.property-name.css -comment -string",
+									"meta.property-value.css -comment -string",
+									"meta.value.css -comment -string",
+									"meta.tag.inline.any.html string.quoted",
+									"meta.tag.any.html meta.attribute-with-value.style.html"
+								],
+								"use_hex_argb": false
 							},
-							"bracket_highlighter.regions":
-							[
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
+							"git_gutter_enabled": true,
 							"syntax": "Packages/Vuejs Complete Package/vue.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
@@ -1561,20 +1847,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "src/vuex/modules/xgzfile.js",
-					"semi_transient": true,
+					"buffer": 5,
+					"file": ".eslintrc.js",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1269,
+						"buffer_size": 426,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								946,
-								951
+								426,
+								426
 							]
 						],
 						"settings":
@@ -1584,27 +1870,12 @@
 							{
 								"close":
 								{
-									"1":
-									[
-										954,
-										955
-									]
 								},
 								"icon":
 								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"brackethighlighter.default"
-									]
 								},
 								"open":
 								{
-									"1":
-									[
-										885,
-										886
-									]
 								},
 								"unmatched":
 								{
@@ -1612,11 +1883,31 @@
 							},
 							"bracket_highlighter.regions":
 							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
@@ -1627,6 +1918,11 @@
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
@@ -1637,37 +1933,28 @@
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
-								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
+								"bh_default_content"
 							],
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".js",
+								"current_syntax": "JavaScript/JavaScript",
+								"enabled": false,
+								"last_updated": 1482847317.36
+							},
+							"git_gutter_enabled": true,
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
@@ -1676,24 +1963,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "package.json",
+					"buffer": 6,
+					"file": "src/vuex/modules/xgzfile.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2738,
+						"buffer_size": 1284,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								355,
-								320
+								368,
+								368
 							]
 						],
 						"settings":
@@ -1713,7 +2000,7 @@
 								{
 									"1":
 									[
-										"Packages/BracketHighlighter/icons/double_quote.png",
+										"Packages/BracketHighlighter/icons/single_quote.png",
 										"brackethighlighter.default"
 									]
 								},
@@ -1721,8 +2008,8 @@
 								{
 									"1":
 									[
-										319,
-										320
+										364,
+										365
 									]
 								},
 								"unmatched":
@@ -1731,46 +2018,176 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
 								"bh_c_define",
 								"bh_c_define_center",
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
+							],
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".js",
+								"current_syntax": "JavaScript/JavaScript",
+								"enabled": false,
+								"last_updated": 1480708828.82
+							},
+							"git_gutter_enabled": true,
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "package.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2799,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										2797,
+										2798
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										0,
+										1
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
@@ -1781,21 +2198,42 @@
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content"
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
 							],
+							"color_helper.box_height": 17,
+							"color_helper.color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".json",
+								"current_syntax": "Seti_UI/icons/Langs/npm JSON",
+								"enabled": false,
+								"last_updated": 1480708828.82
+							},
+							"git_gutter_enabled": true,
 							"syntax": "Packages/Seti_UI/icons/Langs/npm JSON.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 7,
 					"type": "text"
 				}
 			]
@@ -1865,6 +2303,46 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"action",
+				"src/vuex/actions.js"
+			],
+			[
+				"page",
+				"src/components/menu/PageHeader.vue"
+			],
+			[
+				"hea",
+				"src/components/menu/PageHeader.vue"
+			],
+			[
+				"pa",
+				"package.json"
+			],
+			[
+				"pro",
+				"src/components/menu/ProfileMenu.vue"
+			],
+			[
+				"store",
+				"src/vuex/store.js"
+			],
+			[
+				"pack",
+				"package.json"
+			],
+			[
+				"gapi",
+				"src/gapi/gapi-integration.js"
+			],
+			[
+				"user",
+				"src/stores/user.js"
+			],
+			[
+				"build",
+				"build/build.js"
+			],
 			[
 				"pagehe",
 				"src/components/menu/PageHeader.vue"
@@ -2086,10 +2564,6 @@
 				"config/mlumen-services.php"
 			],
 			[
-				"gapi",
-				"src/gapi/gapi-integration.js"
-			],
-			[
 				"file",
 				"config/filesystems.php"
 			],
@@ -2238,10 +2712,6 @@
 				"app/Entities/Medal.php"
 			],
 			[
-				"user",
-				"app/Entities/User.php"
-			],
-			[
 				"rou",
 				"app/Http/routes.php"
 			],
@@ -2344,38 +2814,6 @@
 			[
 				"cra",
 				"vendor/laravel/lumen-framework/src/Testing/CrawlerTrait.php"
-			],
-			[
-				"authte",
-				"tests/OAuth/OAuthTest.php"
-			],
-			[
-				"ups",
-				"app/Services/Integrations/UpstreamCarrierIntegrator.php"
-			],
-			[
-				"pincodeser",
-				"app/Services/Integrations/PincodeService.php"
-			],
-			[
-				"i18",
-				"www/i18n/i18n-pt-BR.json"
-			],
-			[
-				"authcon",
-				"app/Http/Controllers/AuthController.php"
-			],
-			[
-				"account",
-				"app/Http/Controllers/AccountController.php"
-			],
-			[
-				"helpers.php",
-				"vendor/laravel/framework/src/Illuminate/Support/helpers.php"
-			],
-			[
-				"carr",
-				"app/Providers/CarrierIntegratorProvider.php"
 			]
 		],
 		"width": 0.0
@@ -2386,6 +2824,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"",
+				"/Volumes/MacOSXExt/Users/tiagoalves/Projects/mLearn/others/appcursos_frontend/appcursos_frontend.sublime-project"
+			]
 		],
 		"width": 380.0
 	},

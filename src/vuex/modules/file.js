@@ -19,7 +19,8 @@ export const STATUS_LIST = {
 
 const state = {
   metadata: {
-    name: 'New XGZ document'
+    name: 'New document',
+    id: 'hgf'
   },
   content: '',
   status: STATUS_LIST.INITIAL
@@ -29,7 +30,7 @@ const mutations = {
   [NEW_FILE] (state, name) {
     state.metadata = {
       id: null,
-      mimeType: 'application/file-xgz',
+      mimeType: process.env.DEFAULT_MIMETYPE,
       name: name
     }
     state.content = ''
