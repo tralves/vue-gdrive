@@ -84,7 +84,7 @@ export default {
     openFile () {
       GapiIntegration.showPicker()
         .then((id) => {
-          console.log('open file:' + id)
+          console.log('open file: ' + id)
           if (id !== this.fileId) {
             GapiIntegration.loadFile(id)
             .then(file => {

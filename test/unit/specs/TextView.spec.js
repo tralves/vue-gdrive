@@ -27,7 +27,7 @@ describe('TextView.vue shows file content', () => {
     })
   })
 
-  it('send content to store on edit', done => {
+  it('sends content to store on edit', done => {
     // create ActionsStub
     var TextViewInjector = require('!!vue?inject!src/components/TextView')
     var editContentStub = sinon.stub()
