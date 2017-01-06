@@ -67,4 +67,21 @@ describe('CreateNewFileDialog.vue creates or opens new file', () => {
 
     done()
   })
+
+  // it('send content to store on edit', done => {
+  //   const vm = new Vue({
+  //     template: '<div><create-new-file-dialog></create-new-file-dialog></div>',
+  //     components: { CreateNewXgzDialog }
+  //   }).$mount()
+
+  //   /* global Event */
+  //   Vue.nextTick(() => {
+  //     vm.$el.querySelector('textarea').value = 'more file contents'
+  //     vm.$el.querySelector('textarea').dispatchEvent(new Event('input'))
+  //     expect(ActionsStub)
+  //       .calledWith(sinon.match.any, 'more file contents')
+  //       .calledOnce
+  //     done()
+  //   })
+  // })
 })
