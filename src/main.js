@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import VueMdl from 'vue-mdl'
 
-import store from './vuex/store'
+import store from './store'
 
 // import mdl stuff
 import 'material-design-lite'

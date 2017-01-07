@@ -1,6 +1,7 @@
 import GapiIntegration from '../gapi/gapi-integration'
 import * as types from './mutation-types'
 import _ from 'lodash'
+import qs from 'querystringify'
 
 export const createNewFile = ({commit, state}, filename) => {
   console.log('Creating new file')
@@ -11,6 +12,7 @@ export const createNewFile = ({commit, state}, filename) => {
     .then(
       (result) => commit(types.FILE_SAVED, result.result),
       (reason) => commit(types.FILE_NOT_SAVED))
+    .then(() => { updateWindowUrl(state.file.metadata) })
 }
 
 export const saveFile = ({commit, state}) => {
@@ -50,8 +52,13 @@ export const renameFile = ({commit, state}, filename) => {
   debounceSave({commit, state})
 }
 
-export const loadFile = ({commit}, file) => {
+export const loadFile = ({commit, state}, file) => {
   commit(types.LOAD_FILE, file)
-  window.history.pushState(this, '', '?file=' + file.metadata.id)
+  updateWindowUrl(state.file.metadata)
 }
 
+function updateWindowUrl (fileMetadata) {
+  let queryVars = qs.parse(window.location.search)
+  queryVars.file = fileMetadata.id
+  window.history.pushState({}, fileMetadata.name, '/' + qs.stringify(queryVars, true))
+}

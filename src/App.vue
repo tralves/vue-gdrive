@@ -9,7 +9,7 @@
       </span>
       <nav class="mdl-navigation">
         <profile-menu></profile-menu>
-        <a class="mdl-navigation__link" @click="openCreateNewFile()">New</a>
+        <a class="mdl-navigation__link" @click="newFile()">New</a>
         <!--a class="mdl-navigation__link" @click="openFile">Open</a>
         <a class="mdl-navigation__link" @click="openShare">Share</a-->
       </nav>
@@ -43,7 +43,7 @@
 
 <script>
 import qs from 'querystringify'
-import { loadFile } from './vuex/actions'
+import { mapActions } from 'vuex'
 import PageHeader from './components/menu/PageHeader'
 import CreateNewFileDialog from './components/CreateNewFileDialog'
 import TextView from './components/TextView'
@@ -62,11 +62,6 @@ export default {
     return {
       user: null,
       file: null
-    }
-  },
-  vuex: {
-    actions: {
-      loadFile
     }
   },
   mounted: function () {
@@ -91,6 +86,10 @@ export default {
       })
   },
   methods: {
+    ...mapActions([
+      'loadFile' // map this.increment() to this.$store.dispatch('increment')
+    ]),
+
     handleAuthClick () {
       this.$refs.login.close()
       GapiIntegration.authorize(false, this.user)
@@ -129,6 +128,11 @@ export default {
 
     openCreateNewFile () {
       this.$refs.create_new_file.openDialog()
+    },
+
+    newFile () {
+      window.open('/', '_blank')
+      this.closeNav()
     }
   }
 }

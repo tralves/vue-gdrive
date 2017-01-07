@@ -19,24 +19,35 @@
 
 <script>
 /* global Event */
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import indexOf from 'lodash/indexOf'
 import autosizeInput from 'autosize-input'
-import { renameFile, loadFile } from '../../vuex/actions'
-import { STATUS_LIST } from '../../vuex/modules/file'
+import { STATUS_LIST } from '../../store/modules/file'
 import GapiIntegration from '../../gapi/gapi-integration'
 
 export default {
   components: {
   },
-  data () {
-    return {
-    }
+  computed: {
+    fileName () {
+      if (this && this.$refs.filename) {
+        setTimeout(() => { this.$refs.filename.dispatchEvent(new Event('input')) }, 10)
+      }
+      return this.$store.state.file.metadata.name
+    },
+    fileStatus () {
+      switch (this.$store.state.file.status) {
+        case STATUS_LIST.INTIAL: return 'New file'
+        case STATUS_LIST.SAVING: return 'Saving...'
+        case STATUS_LIST.SAVED: return 'Last change on ' + this.$store.state.file.metadata.modifiedTime
+        case STATUS_LIST.NOT_SAVED: return 'Could not save to drive'
+        case STATUS_LIST.DIRTY: return 'Not saved'
+      }
+    },
+    ...mapState({
+      fileId: (state) => state.file.metadata.id
+    })
   },
-  computed: mapState({
-    fileName: state => state.file.metadata.name,
-    fileId: state => state.file.metadata.id
-  }),
   watch: {
     'fileName': function (val, oldVal) {
       if (typeof this !== 'undefined') {
@@ -45,31 +56,14 @@ export default {
       }
     }
   },
-  vuex: {
-    getters: {
-      fileStatus: state => {
-        switch (state.file.status) {
-          case STATUS_LIST.INTIAL: return 'New file'
-          case STATUS_LIST.SAVING: return 'Saving...'
-          case STATUS_LIST.SAVED: return 'Last change on ' + state.file.metadata.modifiedTime
-          case STATUS_LIST.NOT_SAVED: return 'Could not save to drive'
-          case STATUS_LIST.DIRTY: return 'Not saved'
-        }
-      }
-    },
-    actions: {
-      renameFile,
-      loadFile
-    }
-  },
   methods: {
+    ...mapActions([
+      'renameFile',
+      'loadFile'
+    ]),
+
     rename (e) {
       this.renameFile(e.target.value)
-    },
-
-    openCreateNewFile () {
-      window.open('/', '_blank')
-      this.closeNav()
     },
 
     closeNav () {
