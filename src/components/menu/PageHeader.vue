@@ -10,7 +10,7 @@
         
         <!-- Navigation. We hide it in small screens. -->
         <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <mdl-button @click="openShare"><i class="material-icons">share</i> Share</mdl-button>
+          <mdl-button @click.native="openShare()"><i class="material-icons">share</i> Share</mdl-button>
           <!-- <profile-menu></profile-menu> -->
         </nav>
       </div>
