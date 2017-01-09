@@ -4,3 +4,7 @@ $secondary-color: rgb(255,215,64);
 .mdl-layout__drawer-button {
   color: $primary-color !important;
 }
+
+.mdl-dialog-container {
+  z-index: 1000 !important;
+}

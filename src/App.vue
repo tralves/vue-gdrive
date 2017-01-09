@@ -113,7 +113,6 @@ export default {
 
     loadThisFile () {
       console.log('load file')
-
       // if no file id in URL, open create dialog
       if (this.file) {
         GapiIntegration.loadFile(this.file)

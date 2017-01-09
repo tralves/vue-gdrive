@@ -7,7 +7,7 @@ Vue.use(VueMdl)
 // create ActionsStub
 var CreateNewFileDialogInjector = require('!!vue?inject!src/components/CreateNewFileDialog')
 var createNewFileStub = sinon.stub()
-var showPickerStub = sinon.stub().returns(Promise.resolve())
+var openFromGDriveStub = sinon.stub().returns(Promise.resolve())
 var CreateNewFileDialog = CreateNewFileDialogInjector({
   'vuex': {
     mapActions: function () {
@@ -16,8 +16,10 @@ var CreateNewFileDialog = CreateNewFileDialogInjector({
       }
     }
   },
-  '../gapi/gapi-integration': {
-    showPicker: showPickerStub
+  'src/services': {
+    file: {
+      openFromGDrive: openFromGDriveStub
+    }
   }
 })
 
@@ -60,7 +62,7 @@ describe('CreateNewFileDialog.vue creates or opens new file', () => {
 
     // assert
     // action gdrive picker is called
-    expect(showPickerStub).calledOnce
+    expect(openFromGDriveStub).calledOnce
 
     // // popup is closed
     assert.equal('none', vm.$el.querySelector('.mdl-dialog-container').style.display, 'popup is hidden')

@@ -5,8 +5,6 @@ class GApiIntegration {
 /* global gapi, google */
 
   constructor () {
-    console.log('CONSTRUCTING GApi!!!!')
-
     this.CLIENT_ID = process.env.CLIENT_ID
     this.SCOPES = ['email', 'profile', 'https://www.googleapis.com/auth/drive',
       'https://www.googleapis.com/auth/drive.install',
@@ -19,7 +17,7 @@ class GApiIntegration {
     return new Promise(
       (resolve, reject) => {
         (function waitForApi () {
-          console.log('loadDriveApi...')
+          console.info('loadDriveApi...')
           if (gapi && gapi.client) {
             Promise.all([
               gapi.client.load('drive', 'v3'),
@@ -27,12 +25,12 @@ class GApiIntegration {
               gapi.load('picker'),
               gapi.load('drive-share')])
               .then(() => {
-                console.log('gapi.client.load finished!!')
+                console.info('gapi.client.load finished!!')
                 resolve()
               })
           } else {
             setTimeout(() => waitForApi(), 100)
-            console.log('wait for it...')
+            console.info('wait for it...')
           }
         })()
       }
@@ -43,18 +41,18 @@ class GApiIntegration {
    * Makes the gapi authorization process
    */
   authorize (immediate = true, user = null) {
-    console.log('authorize')
+    console.info('authorize')
     return new Promise(
       (resolve, reject) => {
         gapi.auth.authorize(
           this.buildAuthRequest(immediate, user),
           (authResult) => {
-            console.log('RESULT!!!!!!!!')
+            console.info('RESULT!!!!!!!!')
             if (authResult && !authResult.error) {
-              console.log('resolved!')
+              console.info('resolved!')
               resolve()
             } else {
-              console.log('rejected!')
+              console.info('rejected!')
               reject()
             }
           }
@@ -180,7 +178,7 @@ class GApiIntegration {
               var id = data.docs[0].id
               resolve(id)
             } else if (data.action === 'cancel') {
-              reject()
+              reject('cancel')
             }
           })
           .build()
