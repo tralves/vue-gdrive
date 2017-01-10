@@ -23,7 +23,7 @@ import { mapState, mapActions } from 'vuex'
 import indexOf from 'lodash/indexOf'
 import autosizeInput from 'autosize-input'
 import { STATUS_LIST } from '../../store/modules/file'
-import GapiIntegration from '../../gapi/gapi-integration'
+import { file } from 'src/services'
 
 export default {
   components: {
@@ -76,22 +76,12 @@ export default {
     },
 
     openFile () {
-      GapiIntegration.showPicker()
-        .then((id) => {
-          console.log('open file: ' + id)
-          if (id !== this.fileId) {
-            GapiIntegration.loadFile(id)
-            .then(file => {
-              console.log('GOT FILE!!!!!!')
-              this.loadFile(file)
-            })
-          }
-        })
-      this.closeNav()
+      file.openFromGDrive()
+        .then(() => this.closeNav())
     },
 
     openShare () {
-      GapiIntegration.showSharing(this.fileId)
+      file.share(this.fileId)
       this.closeNav()
     }
 

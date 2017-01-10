@@ -50,6 +50,7 @@ import TextView from './components/TextView'
 import ProfileMenu from './components/menu/ProfileMenu'
 import GapiIntegration from './gapi/gapi-integration'
 import user from './stores/user'
+import { file } from 'src/services'
 
 export default {
   components: {
@@ -115,11 +116,7 @@ export default {
       console.log('load file')
       // if no file id in URL, open create dialog
       if (this.file) {
-        GapiIntegration.loadFile(this.file)
-          .then(file => {
-            console.log('GOT FILE!!!!!!')
-            this.loadFile(file)
-          })
+        file.loadFromGDrive(this.file)
       } else {
         this.openCreateNewFile()
       }
