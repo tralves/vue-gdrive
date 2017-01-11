@@ -14,8 +14,8 @@ const mockedFileStore = {
 
 var mockedStore = new Vuex.Store(mockedFileStore)
 
-describe('TextView.vue shows file content', () => {
-  it('should render correct contents', done => {
+describe('TextView.vue', () => {
+  it('should render contents from store', done => {
     const vm = new Vue({
       template: '<div><text-view></text-view></div>',
       components: { TextView },

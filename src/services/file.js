@@ -19,7 +19,7 @@ export const file = {
             }
           })
           .catch(() => {
-            reject('no picked')
+            reject('not picked')
           })
       })
   },
@@ -37,7 +37,7 @@ export const file = {
             store.dispatch('loadFile', file)
             resolve()
           })
-          .catch(() => reject('no load'))
+          .catch(() => reject('not loaded'))
       })
   },
 
@@ -45,7 +45,7 @@ export const file = {
    * Opens GDrive share screen
    * @param  {string} id GDrive file id.
    */
-  share (id) {
-    return GapiIntegration.showSharing(id)
+  share () {
+    return GapiIntegration.showSharing(_get(store, 'state.file.metadata.id'))
   }
 }

@@ -20,7 +20,6 @@
 <script>
 /* global Event */
 import { mapState, mapActions } from 'vuex'
-import indexOf from 'lodash/indexOf'
 import autosizeInput from 'autosize-input'
 import { STATUS_LIST } from '../../store/modules/file'
 import { file } from 'src/services'
@@ -58,33 +57,16 @@ export default {
   },
   methods: {
     ...mapActions([
-      'renameFile',
-      'loadFile'
+      'renameFile'
     ]),
 
     rename (e) {
       this.renameFile(e.target.value)
     },
 
-    closeNav () {
-      setTimeout(() => {
-        let d = document.querySelector('.mdl-layout__drawer')
-        if (indexOf(d.classList, 'is-visible') !== -1) {
-          document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer()
-        }
-      }, 100)
-    },
-
-    openFile () {
-      file.openFromGDrive()
-        .then(() => this.closeNav())
-    },
-
     openShare () {
-      file.share(this.fileId)
-      this.closeNav()
+      file.share()
     }
-
   },
 
   mounted () {
