@@ -2,18 +2,7 @@
 <div id="app">
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <page-header></page-header>
-    <div class="mdl-layout__drawer">
-
-      <span class="mdl-layout-title">
-        
-      </span>
-      <nav class="mdl-navigation">
-        <profile-menu></profile-menu>
-        <a class="mdl-navigation__link" @click="newFile()">New</a>
-        <!--a class="mdl-navigation__link" @click="openFile">Open</a>
-        <a class="mdl-navigation__link" @click="openShare">Share</a-->
-      </nav>
-    </div>
+    <side-menu></side-menu>
     <main class="mdl-layout__content mdl-color--grey-100">
       <div class="page-content">
 
@@ -43,19 +32,21 @@
 
 <script>
 import qs from 'querystringify'
-import { mapActions } from 'vuex'
 import PageHeader from './components/menu/PageHeader'
+import SideMenu from './components/menu/SideMenu'
 import CreateNewFileDialog from './components/CreateNewFileDialog'
 import TextView from './components/TextView'
 import ProfileMenu from './components/menu/ProfileMenu'
 import GapiIntegration from './gapi/gapi-integration'
 import user from './stores/user'
+import { file } from 'src/services'
 
 export default {
   components: {
     PageHeader,
     TextView,
     ProfileMenu,
+    SideMenu,
     'create-new-file-dialog': CreateNewFileDialog
   },
   data: function () {
@@ -65,9 +56,7 @@ export default {
     }
   },
   mounted: function () {
-    console.log(GapiIntegration)
     let queryVars = qs.parse(window.location.search)
-    console.log(queryVars)
     this.user = queryVars.user
     this.file = queryVars.file
 
@@ -86,10 +75,6 @@ export default {
       })
   },
   methods: {
-    ...mapActions([
-      'loadFile' // map this.increment() to this.$store.dispatch('increment')
-    ]),
-
     handleAuthClick () {
       this.$refs.login.close()
       GapiIntegration.authorize(false, this.user)
@@ -113,14 +98,9 @@ export default {
 
     loadThisFile () {
       console.log('load file')
-
       // if no file id in URL, open create dialog
       if (this.file) {
-        GapiIntegration.loadFile(this.file)
-          .then(file => {
-            console.log('GOT FILE!!!!!!')
-            this.loadFile(file)
-          })
+        file.loadFromGDrive(this.file)
       } else {
         this.openCreateNewFile()
       }
@@ -128,11 +108,6 @@ export default {
 
     openCreateNewFile () {
       this.$refs.create_new_file.openDialog()
-    },
-
-    newFile () {
-      window.open('/', '_blank')
-      this.closeNav()
     }
   }
 }

@@ -7,7 +7,7 @@ Vue.use(VueMdl)
 // create ActionsStub
 var CreateNewFileDialogInjector = require('!!vue?inject!src/components/CreateNewFileDialog')
 var createNewFileStub = sinon.stub()
-var showPickerStub = sinon.stub().returns(Promise.resolve())
+var openFromGDriveStub = sinon.stub().returns(Promise.resolve())
 var CreateNewFileDialog = CreateNewFileDialogInjector({
   'vuex': {
     mapActions: function () {
@@ -16,12 +16,14 @@ var CreateNewFileDialog = CreateNewFileDialogInjector({
       }
     }
   },
-  '../gapi/gapi-integration': {
-    showPicker: showPickerStub
+  'src/services': {
+    file: {
+      openFromGDrive: openFromGDriveStub
+    }
   }
 })
 
-describe('CreateNewFileDialog.vue creates or opens new file', () => {
+describe('CreateNewFileDialog.vue', () => {
   it('should create new file', done => {
     // arrange
     const vm = new Vue({
@@ -60,28 +62,11 @@ describe('CreateNewFileDialog.vue creates or opens new file', () => {
 
     // assert
     // action gdrive picker is called
-    expect(showPickerStub).calledOnce
+    expect(openFromGDriveStub).calledOnce
 
-    // // popup is closed
+    // popup is closed
     assert.equal('none', vm.$el.querySelector('.mdl-dialog-container').style.display, 'popup is hidden')
 
     done()
   })
-
-  // it('send content to store on edit', done => {
-  //   const vm = new Vue({
-  //     template: '<div><create-new-file-dialog></create-new-file-dialog></div>',
-  //     components: { CreateNewXgzDialog }
-  //   }).$mount()
-
-  //   /* global Event */
-  //   Vue.nextTick(() => {
-  //     vm.$el.querySelector('textarea').value = 'more file contents'
-  //     vm.$el.querySelector('textarea').dispatchEvent(new Event('input'))
-  //     expect(ActionsStub)
-  //       .calledWith(sinon.match.any, 'more file contents')
-  //       .calledOnce
-  //     done()
-  //   })
-  // })
 })

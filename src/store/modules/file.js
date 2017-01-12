@@ -20,7 +20,7 @@ export const STATUS_LIST = {
 const state = {
   metadata: {
     name: 'New document',
-    id: 'hgf'
+    id: 'no-id'
   },
   content: '',
   status: STATUS_LIST.INITIAL

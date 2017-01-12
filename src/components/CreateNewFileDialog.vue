@@ -10,8 +10,8 @@
 
 <script>
 import { mapActions } from 'vuex'
-import gdriveSvg from '../assets/google-drive.svg'
-import GapiIntegration from '../gapi/gapi-integration'
+import gdriveSvg from 'src/assets/google-drive.svg'
+import { file } from 'src/services'
 
 export default {
   data () {
@@ -34,17 +34,9 @@ export default {
       this.createNewFile(this.$el.querySelector('#create-filename-input').value)
     },
     openFromGDrive () {
-      this.$refs.create_new_file.close()
-      GapiIntegration.showPicker()
-        .then((id) => {
-          console.log('open file: ' + id)
-          if (id !== this.fileId) {
-            GapiIntegration.loadFile(id)
-            .then(file => {
-              this.loadFile(file)
-            })
-          }
-        })
+      file.openFromGDrive()
+        .then(() => { this.$refs.create_new_file.close() })
+        .catch(() => { console.info('Canceled gapi picker.') })
     },
     updateFilename ($event) {
       this.filename = $event.value

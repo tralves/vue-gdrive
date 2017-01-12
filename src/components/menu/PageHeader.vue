@@ -20,10 +20,9 @@
 <script>
 /* global Event */
 import { mapState, mapActions } from 'vuex'
-import indexOf from 'lodash/indexOf'
 import autosizeInput from 'autosize-input'
 import { STATUS_LIST } from '../../store/modules/file'
-import GapiIntegration from '../../gapi/gapi-integration'
+import { file } from 'src/services'
 
 export default {
   components: {
@@ -58,43 +57,16 @@ export default {
   },
   methods: {
     ...mapActions([
-      'renameFile',
-      'loadFile'
+      'renameFile'
     ]),
 
     rename (e) {
       this.renameFile(e.target.value)
     },
 
-    closeNav () {
-      setTimeout(() => {
-        let d = document.querySelector('.mdl-layout__drawer')
-        if (indexOf(d.classList, 'is-visible') !== -1) {
-          document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer()
-        }
-      }, 100)
-    },
-
-    openFile () {
-      GapiIntegration.showPicker()
-        .then((id) => {
-          console.log('open file: ' + id)
-          if (id !== this.fileId) {
-            GapiIntegration.loadFile(id)
-            .then(file => {
-              console.log('GOT FILE!!!!!!')
-              this.loadFile(file)
-            })
-          }
-        })
-      this.closeNav()
-    },
-
     openShare () {
-      GapiIntegration.showSharing(this.fileId)
-      this.closeNav()
+      file.share()
     }
-
   },
 
   mounted () {

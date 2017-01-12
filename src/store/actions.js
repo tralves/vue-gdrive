@@ -5,7 +5,6 @@ import qs from 'querystringify'
 
 export const createNewFile = ({commit, state}, filename) => {
   console.log('Creating new file')
-
   commit(types.NEW_FILE)
 
   GapiIntegration.saveFile(state.file, filename)
