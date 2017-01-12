@@ -23,11 +23,11 @@ Try the app [here](https://tralves.github.io/vue-gdrive/)!
 - Create file in GDrive;
 - (Auto-)save file in GDrive;
 - Load File from GDrive;
+- Share file;
  
 #### TODO:
 
 - Save in folder;
-- Share file;
 - Realtime colaboration;
 - i18n;
 
