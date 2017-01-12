@@ -23,9 +23,10 @@ class GApiIntegration {
               gapi.client.load('drive', 'v3'),
               gapi.client.load('plus', 'v1'),
               gapi.load('picker'),
-              gapi.load('drive-share')])
+              gapi.load('drive-share'),
+              gapi.load('drive-realtime')])
               .then(() => {
-                console.info('gapi.client.load finished!!')
+                console.info('gapi.client.load finished!')
                 resolve()
               })
           } else {
@@ -152,10 +153,36 @@ class GApiIntegration {
         })
 
         resolve(Promise.all([metadataRequest, contentRequest]))
-      }).then(function (responses) {
+      }).then((responses) => {
         return {metadata: responses[0].result, content: responses[1].body}
       })
   };
+
+  loadRtDoc (file, contentEventHandler) {
+    var that = this
+    return new Promise(
+      (resolve, reject) => {
+        gapi.drive.realtime.load(file.metadata.id,
+          (doc) => {
+            console.log('loaded realtime doc', doc)
+            // Get the field named "text" in the root map.
+            that.contentText = doc.getModel().getRoot().get('content')
+            // Connect the event to the listener.
+            that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, contentEventHandler)
+            that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, contentEventHandler)
+            resolve(doc.getModel())
+          },
+          (model) => {
+            console.log('initializing model', model)
+            var string = model.createString(file.content)
+            model.getRoot().set('content', string)
+          },
+          (error) => {
+            console.log('failed realtime load', error)
+            reject(error)
+          })
+      })
+  }
 
   /**
    * Displays the Drive file picker configured for selecting text files

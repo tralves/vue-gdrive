@@ -19,7 +19,7 @@
         <mdl-dialog ref="login" full-width title="Hi there">
           <p>Please log in with your Google Drive account</p>
           <template slot="actions">
-            <mdl-button primary @click="handleAuthClick">Login</mdl-button>
+            <mdl-button primary @click.native="handleAuthClick">Login</mdl-button>
           </template>
         </mdl-dialog>
         <pre id="output"></pre>

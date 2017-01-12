@@ -3,6 +3,7 @@ import store from 'src/store'
 import _get from 'lodash/get'
 
 export const file = {
+  model: null,
   /**
    * Opens a file from GDrive
    * @return {Promise}
@@ -30,12 +31,25 @@ export const file = {
    * @return {Promise}
    */
   loadFromGDrive (id) {
+    function contentEventHandler (evt) {
+      // Log the event to the console.
+      console.log(evt)
+      store.dispatch('updateContent', {'type': evt.type, 'index': evt.index, 'text': evt.text})
+    }
+
     return new Promise(
       (resolve, reject) => {
         GapiIntegration.loadFile(id)
           .then(file => {
             store.dispatch('loadFile', file)
-            resolve()
+            return file
+          })
+          .then((file) => {
+            console.log('loaded drive file', file)
+            GapiIntegration.loadRtDoc(file, contentEventHandler)
+              .then(() => {
+                resolve(file)
+              })
           })
           .catch(() => reject('not loaded'))
       })
