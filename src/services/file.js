@@ -4,6 +4,29 @@ import _get from 'lodash/get'
 
 export const file = {
   model: null,
+
+  /**
+   * Creates a new file
+   * @param  {string} filename
+   * @return {Promise}
+   */
+  createNewFile (filename) {
+    return new Promise(
+      (resolve, reject) => {
+        store.dispatch('createNewFile', filename)
+          .then((file) => {
+            GapiIntegration.loadRtDoc(file, this.contentEventHandler)
+              .then(() => {
+                resolve(file)
+              })
+              .catch(() => {
+                reject('rt file not loaded')
+              })
+          })
+          .catch(() => reject('not loaded'))
+      })
+  },
+
   /**
    * Opens a file from GDrive
    * @return {Promise}
@@ -31,12 +54,6 @@ export const file = {
    * @return {Promise}
    */
   loadFromGDrive (id) {
-    function contentEventHandler (evt) {
-      // Log the event to the console.
-      console.log(evt)
-      store.dispatch('updateContent', {'type': evt.type, 'index': evt.index, 'text': evt.text})
-    }
-
     return new Promise(
       (resolve, reject) => {
         GapiIntegration.loadFile(id)
@@ -45,14 +62,22 @@ export const file = {
             return file
           })
           .then((file) => {
-            console.log('loaded drive file', file)
-            GapiIntegration.loadRtDoc(file, contentEventHandler)
+            GapiIntegration.loadRtDoc(file, this.contentEventHandler)
               .then(() => {
                 resolve(file)
+              })
+              .catch(() => {
+                reject('rt file not loaded')
               })
           })
           .catch(() => reject('not loaded'))
       })
+  },
+
+  contentEventHandler (evt) {
+    // Log the event to the console.
+    console.log(evt)
+    store.dispatch('updateContent', {'type': evt.type, 'index': evt.index, 'text': evt.text})
   },
 
   /**

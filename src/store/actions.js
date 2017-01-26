@@ -5,13 +5,16 @@ import qs from 'querystringify'
 
 export const createNewFile = ({commit, state}, filename) => {
   console.log('Creating new file')
-  commit(types.NEW_FILE)
+  commit(types.NEW_FILE, filename)
 
-  GapiIntegration.saveFile(state.file, filename)
-    .then(
-      (result) => commit(types.FILE_SAVED, result.result),
-      (reason) => commit(types.FILE_NOT_SAVED))
-    .then(() => { updateWindowUrl(state.file.metadata) })
+  return new Promise((resolve, reject) => {
+    GapiIntegration.saveFile(state.file, filename)
+      .then(
+        (result) => commit(types.FILE_SAVED, result.result),
+        (reason) => commit(types.FILE_NOT_SAVED))
+      .then(() => { updateWindowUrl(state.file.metadata) })
+      .then(() => { resolve(state.file) })
+  })
 }
 
 export const saveFile = ({commit, state}) => {
