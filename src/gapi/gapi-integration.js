@@ -160,6 +160,7 @@ class GApiIntegration {
 
   loadRtDoc (file, contentEventHandler) {
     var that = this
+    console.log('UAI!?')
     return new Promise(
       (resolve, reject) => {
         gapi.drive.realtime.load(file.metadata.id,

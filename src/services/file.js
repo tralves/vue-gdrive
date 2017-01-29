@@ -64,6 +64,7 @@ export const file = {
           .then((file) => {
             GapiIntegration.loadRtDoc(file, this.contentEventHandler)
               .then(() => {
+                store.dispatch('updateContent', GapiIntegration.contentText.getText())
                 resolve(file)
               })
               .catch(() => {
@@ -76,8 +77,8 @@ export const file = {
 
   contentEventHandler (evt) {
     // Log the event to the console.
-    console.log(evt)
-    store.dispatch('updateContent', {'type': evt.type, 'index': evt.index, 'text': evt.text})
+    // console.log(evt)
+    store.dispatch('updateContent', GapiIntegration.contentText.getText())
   },
 
   /**

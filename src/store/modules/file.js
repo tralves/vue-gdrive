@@ -4,6 +4,7 @@ import {
   FILE_SAVED,
   FILE_SAVING,
   FILE_NOT_SAVED,
+  FILE_DIRTY,
   EDIT_CONTENT,
   INSERT_CONTENT,
   DELETE_CONTENT,
@@ -51,9 +52,12 @@ const mutations = {
     state.status = STATUS_LIST.SAVING
   },
 
+  [FILE_DIRTY] (state) {
+    state.status = STATUS_LIST.DIRTY
+  },
+
   [EDIT_CONTENT] (state, content) {
     state.content = content
-    state.status = STATUS_LIST.DIRTY
   },
 
   [INSERT_CONTENT] (state, {index, text}) {

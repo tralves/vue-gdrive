@@ -40,7 +40,7 @@ export default {
         case STATUS_LIST.SAVING: return 'Saving...'
         case STATUS_LIST.SAVED: return 'Last change on ' + this.$store.state.file.metadata.modifiedTime
         case STATUS_LIST.NOT_SAVED: return 'Could not save to drive'
-        case STATUS_LIST.DIRTY: return 'Not saved'
+        case STATUS_LIST.DIRTY: return 'Saving...'
       }
     },
     ...mapState({

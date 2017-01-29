@@ -12,7 +12,8 @@ describe('file', () => {
         'src/gapi/gapi-integration': {
           'showPicker': showPickerStub,
           'loadFile': loadFileStub,
-          'loadRtDoc': loadRtDocStub
+          'loadRtDoc': loadRtDocStub,
+          'contentText': { getText: sinon.stub() }
         },
         'src/store': {
           'dispatch': dispatchStub
@@ -30,6 +31,8 @@ describe('file', () => {
           expect(loadFileStub).calledWith('fakefileid12345').calledOnce
           // loads file
           expect(dispatchStub).calledWith('loadFile', {id: 'fakefileid12345'})
+          // updates content file
+          expect(dispatchStub).calledWith('updateContent', sinon.match.any)
           // loads RT doc
           expect(loadRtDocStub).calledWith({id: 'fakefileid12345'}, sinon.match.any)
           done()
@@ -86,7 +89,8 @@ describe('file', () => {
       var file = fileInjector({
         'src/gapi/gapi-integration': {
           'loadFile': loadFileStub,
-          'loadRtDoc': loadRtDocStub
+          'loadRtDoc': loadRtDocStub,
+          'contentText': { getText: sinon.stub() }
         },
         'src/store': {
           'dispatch': dispatchStub
@@ -101,6 +105,8 @@ describe('file', () => {
           expect(loadFileStub).calledWith('fakefileid12345').calledOnce
           // loads file
           expect(dispatchStub).calledWith('loadFile', fakeFile)
+          // updates content file
+          expect(dispatchStub).calledWith('updateContent', sinon.match.any)
           // loads RT doc
           expect(loadRtDocStub).calledWith(fakeFile, sinon.match.any)
           done()
