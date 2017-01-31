@@ -36,7 +36,7 @@ export const saveFile = ({commit, state}) => {
   })
 }
 
-let debounceSave = _.debounce(saveFile, 5000)
+let debounceSave = _.debounce(saveFile, 2000)
 
 export const editContent = ({commit, state}, value) => {
   // console.log('Editing file content: ' + value)
@@ -59,10 +59,15 @@ export const updateContent = ({commit, state}, text) => {
 
 export const renameFile = ({commit, state}, filename) => {
   console.log('renaming file')
-  commit(types.RENAME_FILE, filename)
+  GapiIntegration.filenameText.setText(filename)
 
   // save file / sync with google realtime api
   debounceSave({commit, state})
+  commit(types.FILE_DIRTY)
+}
+
+export const updateFilename = ({commit, state}, filename) => {
+  commit(types.RENAME_FILE, filename)
 }
 
 export const loadFile = ({commit, state}, file) => {

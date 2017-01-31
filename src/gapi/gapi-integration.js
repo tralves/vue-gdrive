@@ -158,9 +158,8 @@ class GApiIntegration {
       })
   };
 
-  loadRtDoc (file, contentEventHandler) {
+  loadRtDoc (file, contentEventHandler, filenameEventHandler) {
     var that = this
-    console.log('UAI!?')
     return new Promise(
       (resolve, reject) => {
         gapi.drive.realtime.load(file.metadata.id,
@@ -171,12 +170,19 @@ class GApiIntegration {
             // Connect the event to the listener.
             that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, contentEventHandler)
             that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, contentEventHandler)
+
+            that.filenameText = doc.getModel().getRoot().get('filename')
+            that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, filenameEventHandler)
+            that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, filenameEventHandler)
+
             resolve(doc.getModel())
           },
           (model) => {
             console.log('initializing model', model)
-            var string = model.createString(file.content)
-            model.getRoot().set('content', string)
+            var contentString = model.createString(file.content)
+            model.getRoot().set('content', contentString)
+            var filenameString = model.createString(file.content)
+            model.getRoot().set('filename', filenameString)
           },
           (error) => {
             console.log('failed realtime load', error)

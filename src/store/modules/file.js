@@ -72,7 +72,6 @@ const mutations = {
 
   [RENAME_FILE] (state, filename) {
     state.metadata.name = filename
-    state.status = STATUS_LIST.DIRTY
   },
 
   [LOAD_FILE] (state, file) {

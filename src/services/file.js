@@ -15,7 +15,7 @@ export const file = {
       (resolve, reject) => {
         store.dispatch('createNewFile', filename)
           .then((file) => {
-            GapiIntegration.loadRtDoc(file, this.contentEventHandler)
+            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler)
               .then(() => {
                 resolve(file)
               })
@@ -62,7 +62,7 @@ export const file = {
             return file
           })
           .then((file) => {
-            GapiIntegration.loadRtDoc(file, this.contentEventHandler)
+            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler)
               .then(() => {
                 store.dispatch('updateContent', GapiIntegration.contentText.getText())
                 resolve(file)
@@ -77,8 +77,15 @@ export const file = {
 
   contentEventHandler (evt) {
     // Log the event to the console.
-    // console.log(evt)
+    console.log('contentEventHandler')
     store.dispatch('updateContent', GapiIntegration.contentText.getText())
+  },
+
+  filenameEventHandler (evt) {
+    // Log the event to the console.
+    // console.log(evt)
+    console.log('filenameEventHandler: ' + GapiIntegration.filenameText.getText())
+    store.dispatch('updateFilename', GapiIntegration.filenameText.getText())
   },
 
   /**
