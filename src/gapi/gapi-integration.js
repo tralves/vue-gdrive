@@ -158,7 +158,7 @@ class GApiIntegration {
       })
   };
 
-  loadRtDoc (file, contentEventHandler, filenameEventHandler) {
+  loadRtDoc (file, contentEventHandler, filenameEventHandler, collaboratorEventHandler) {
     var that = this
     return new Promise(
       (resolve, reject) => {
@@ -174,6 +174,10 @@ class GApiIntegration {
             that.filenameText = doc.getModel().getRoot().get('filename')
             that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, filenameEventHandler)
             that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, filenameEventHandler)
+
+            doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_JOINED, collaboratorEventHandler)
+            doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_LEFT, collaboratorEventHandler)
+            collaboratorEventHandler({target: doc, type: 'init_collaborators'})
 
             resolve(doc.getModel())
           },

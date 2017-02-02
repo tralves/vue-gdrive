@@ -15,7 +15,7 @@ export const file = {
       (resolve, reject) => {
         store.dispatch('createNewFile', filename)
           .then((file) => {
-            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler)
+            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler, this.collaboratorEventHandler)
               .then(() => {
                 resolve(file)
               })
@@ -62,7 +62,7 @@ export const file = {
             return file
           })
           .then((file) => {
-            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler)
+            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler, this.collaboratorEventHandler)
               .then(() => {
                 store.dispatch('updateContent', GapiIntegration.contentText.getText())
                 resolve(file)
@@ -86,6 +86,21 @@ export const file = {
     // console.log(evt)
     console.log('filenameEventHandler: ' + GapiIntegration.filenameText.getText())
     store.dispatch('updateFilename', GapiIntegration.filenameText.getText())
+  },
+
+  collaboratorEventHandler (evt) {
+    // Log the event to the console.
+    console.log('---------------- collaboratorEventHandler: ' + (evt ? evt.type : 'none'))
+    console.log(evt.target.getCollaborators().length + 'COLLABORATORS')
+    evt.target.getCollaborators().forEach((collaborator) => {
+      console.log('User ID:' + collaborator.userId)
+      console.log('Session ID:' + collaborator.sessionId)
+      console.log('Name:' + collaborator.displayName)
+      console.log('Color:' + collaborator.color)
+      console.log('IS_ME: ' + collaborator.isMe)
+    })
+
+    store.dispatch('initCollaborators', evt.target.getCollaborators())
   },
 
   /**

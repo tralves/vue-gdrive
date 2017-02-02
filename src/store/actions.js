@@ -75,6 +75,18 @@ export const loadFile = ({commit, state}, file) => {
   updateWindowUrl(state.file.metadata)
 }
 
+export const initCollaborators = ({commit, state}, collaborators) => {
+  commit(types.INIT_COLLABORATORS, collaborators)
+}
+
+export const addCollaborator = ({commit, state}, collaborator) => {
+  commit(types.ADD_COLLABORATOR, collaborator)
+}
+
+export const removeCollaborator = ({commit, state}, collaborator) => {
+  commit(types.REMOVE_COLLABORATOR, collaborator)
+}
+
 function updateWindowUrl (fileMetadata) {
   let queryVars = qs.parse(window.location.search)
   queryVars.file = fileMetadata.id
