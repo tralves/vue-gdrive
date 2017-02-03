@@ -13,7 +13,7 @@
             <text-view></text-view>
           </div>
           <div class="mdl-cell mdl-cell--2-col" id="right-tools">
-          </div>          
+          </div>
         </div>
 
         <mdl-dialog ref="login" full-width title="Hi there">

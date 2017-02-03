@@ -7,7 +7,8 @@
         <span class="filestatus">{{ fileStatus }}</span>
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
-        
+        <collaborator v-for="collaborator in collaborators" v-bind:collaborator="collaborator">
+        </collaborator>
         <!-- Navigation. We hide it in small screens. -->
         <nav class="mdl-navigation mdl-layout--large-screen-only">
           <mdl-button @click.native="openShare()"><i class="material-icons">share</i> Share</mdl-button>
@@ -24,8 +25,11 @@ import autosizeInput from 'autosize-input'
 import { STATUS_LIST } from '../../store/modules/file'
 import { file } from 'src/services'
 
+import Collaborator from 'src/components/menu/Collaborator'
+
 export default {
   components: {
+    Collaborator
   },
   computed: {
     fileName () {
@@ -44,7 +48,8 @@ export default {
       }
     },
     ...mapState({
-      fileId: (state) => state.file.metadata.id
+      fileId: (state) => state.file.metadata.id,
+      collaborators: (state) => state.collaborators.users
     })
   },
   watch: {
