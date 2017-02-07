@@ -158,7 +158,7 @@ class GApiIntegration {
       })
   };
 
-  loadRtDoc (file, contentEventHandler, filenameEventHandler, collaboratorEventHandler) {
+  loadRtDoc (file, contentEventHandler, filenameEventHandler, collaboratorEventHandler, cursorsMapEventHandler) {
     var that = this
     return new Promise(
       (resolve, reject) => {
@@ -167,7 +167,6 @@ class GApiIntegration {
             console.log('loaded realtime doc', doc)
             // Get the field named "text" in the root map.
             that.contentText = doc.getModel().getRoot().get('content')
-            // Connect the event to the listener.
             that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, contentEventHandler)
             that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, contentEventHandler)
 
@@ -175,18 +174,28 @@ class GApiIntegration {
             that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, filenameEventHandler)
             that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, filenameEventHandler)
 
+            // collaborators
             doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_JOINED, collaboratorEventHandler)
             doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_LEFT, collaboratorEventHandler)
             collaboratorEventHandler({target: doc, type: 'init_collaborators'})
+
+            // cursors map
+            that.cursorsMap = doc.getModel().getRoot().get('cursors')
+            that.cursorsMap.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, cursorsMapEventHandler)
 
             resolve(doc.getModel())
           },
           (model) => {
             console.log('initializing model', model)
+
             var contentString = model.createString(file.content)
             model.getRoot().set('content', contentString)
+
             var filenameString = model.createString(file.content)
             model.getRoot().set('filename', filenameString)
+
+            that.cursorsMap = model.createMap()
+            model.getRoot().set('cursors', that.cursorsMap)
           },
           (error) => {
             console.log('failed realtime load', error)

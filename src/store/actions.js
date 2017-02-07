@@ -75,16 +75,12 @@ export const loadFile = ({commit, state}, file) => {
   updateWindowUrl(state.file.metadata)
 }
 
-export const initCollaborators = ({commit, state}, collaborators) => {
-  commit(types.INIT_COLLABORATORS, collaborators)
+export const setCollaborators = ({commit, state}, collaborators) => {
+  commit(types.SET_COLLABORATORS, collaborators)
 }
 
-export const addCollaborator = ({commit, state}, collaborator) => {
-  commit(types.ADD_COLLABORATOR, collaborator)
-}
-
-export const removeCollaborator = ({commit, state}, collaborator) => {
-  commit(types.REMOVE_COLLABORATOR, collaborator)
+export const setCursors = ({commit, state}, cursors) => {
+  commit(types.SET_CURSORS, cursors)
 }
 
 function updateWindowUrl (fileMetadata) {

@@ -11,4 +11,5 @@ export const RENAME_FILE = 'RENAME_FILE'
 export const LOAD_FILE = 'LOAD_FILE'
 
 // collaborator mutations
-export const INIT_COLLABORATORS = 'INIT_COLLABORATORS'
+export const SET_COLLABORATORS = 'SET_COLLABORATORS'
+export const SET_CURSORS = 'SET_CURSORS'

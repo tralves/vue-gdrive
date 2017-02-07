@@ -1,6 +1,9 @@
 import GapiIntegration from 'src/gapi/gapi-integration'
 import store from 'src/store'
 import _get from 'lodash/get'
+import _find from 'lodash/find'
+
+/* global gapi */
 
 export const file = {
   model: null,
@@ -15,7 +18,11 @@ export const file = {
       (resolve, reject) => {
         store.dispatch('createNewFile', filename)
           .then((file) => {
-            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler, this.collaboratorEventHandler)
+            GapiIntegration.loadRtDoc(file,
+              this.contentEventHandler,
+              this.filenameEventHandler,
+              this.collaboratorEventHandler,
+              this.cursorsMapEventHandler.bind(this))
               .then(() => {
                 resolve(file)
               })
@@ -62,7 +69,11 @@ export const file = {
             return file
           })
           .then((file) => {
-            GapiIntegration.loadRtDoc(file, this.contentEventHandler, this.filenameEventHandler, this.collaboratorEventHandler)
+            GapiIntegration.loadRtDoc(file,
+              this.contentEventHandler,
+              this.filenameEventHandler,
+              this.collaboratorEventHandler,
+              this.cursorsMapEventHandler.bind(this))
               .then(() => {
                 store.dispatch('updateContent', GapiIntegration.contentText.getText())
                 resolve(file)
@@ -100,7 +111,81 @@ export const file = {
       console.log('IS_ME: ' + collaborator.isMe)
     })
 
-    store.dispatch('initCollaborators', evt.target.getCollaborators())
+    store.dispatch('setCollaborators', evt.target.getCollaborators())
+  },
+
+  moveCursor (pos) {
+    this.getMyRegisteredReference(pos).index = pos
+  },
+
+  cursorsMapEventHandler (evt) {
+    store.dispatch('setCursors', this.getCursors())
+  },
+
+  getCursors () {
+    const cursorsMap = this.garbageCollectCursors()
+    const keys = cursorsMap.keys()
+    let cursors = {}
+    for (let i = 0; i < keys.length; i++) {
+      cursors[keys[i]] = cursorsMap.get(keys[i]).index
+    }
+
+    return cursors
+  },
+
+  garbageCollectCursors: function () {
+    const cursorsMap = GapiIntegration.cursorsMap
+    const keys = cursorsMap.keys()
+    for (let i = 0; i < keys.length; i++) {
+      //
+      if (!this.getCollaborator(keys[i])) {
+        cursorsMap.delete(keys[i])
+      } else {
+        cursorsMap.get(keys[i]).removeAllEventListeners()
+        cursorsMap.get(keys[i]).addEventListener(
+          gapi.drive.realtime.EventType.REFERENCE_SHIFTED,
+          this.onReferenceShifted.bind(this))
+      }
+    }
+
+    return cursorsMap
+  },
+
+  getCollaborator: function (sessionId) {
+    const collaborators = _get(store, 'state.collaborators.users')
+    if (!collaborators) {
+      return null
+    }
+    return _find(collaborators, {'sessionId': sessionId})
+  },
+
+  getMyCollaborator: function () {
+    const collaborators = _get(store, 'state.collaborators.users')
+    if (!collaborators) {
+      return null
+    }
+    return _find(collaborators, {'isMe': true})
+  },
+
+  getMyRegisteredReference: function (pos) {
+    const cursorsMap = GapiIntegration.cursorsMap
+    if (!cursorsMap) {
+      return null
+    }
+
+    // if there is no registered reference, create it
+    const myRegisteredReference = cursorsMap.get(this.getMyCollaborator().sessionId)
+    if (myRegisteredReference) {
+      return myRegisteredReference
+    }
+    let myNewRegisteredReference = GapiIntegration.contentText.registerReference(pos, true)
+    myNewRegisteredReference.addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, this.onReferenceShifted.bind(this))
+    GapiIntegration.cursorsMap.set(this.getMyCollaborator().sessionId, myNewRegisteredReference)
+    return myNewRegisteredReference
+  },
+
+  onReferenceShifted: function () {
+    store.dispatch('setCursors', this.getCursors())
   },
 
   /**

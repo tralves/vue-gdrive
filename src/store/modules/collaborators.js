@@ -1,14 +1,19 @@
 import {
-  INIT_COLLABORATORS
+  SET_COLLABORATORS,
+  SET_CURSORS
 } from '../mutation-types'
 
 const state = {
-  users: []
+  users: [],
+  cursors: {}
 }
 
 const mutations = {
-  [INIT_COLLABORATORS] (state, collaborators) {
+  [SET_COLLABORATORS] (state, collaborators) {
     state.users = collaborators
+  },
+  [SET_CURSORS] (state, cursors) {
+    state.cursors = cursors
   }
 }
 
