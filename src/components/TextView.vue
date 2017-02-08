@@ -19,16 +19,20 @@ export default {
   computed: {
     ...mapState({
       fileContent: state => state.file.content,
-      collaborators: state => state.collaborators.users,
       storedCursors: state => state.collaborators.cursors
     }),
     cursors () {
       return Object.keys(this.storedCursors).map((sessionId) => {
         const collaborator = file.getCollaborator(sessionId)
-        return {
-          color: collaborator.color,
-          collaboratorName: collaborator.displayName,
-          position: getCaretCoordinates(this.$el.querySelector('textarea'), this.storedCursors[sessionId])
+        // use fileContent so it will update when the file content changes too.
+        console.log(getCaretCoordinates(this.$el.querySelector('textarea'), this.storedCursors[sessionId]))
+        if (collaborator.color) {
+          return {
+            color: collaborator.color,
+            collaboratorName: collaborator.displayName,
+            position: getCaretCoordinates(this.$el.querySelector('textarea'), this.storedCursors[sessionId]),
+            sessionId: collaborator.sessionId
+          }
         }
       }, this)
     }
