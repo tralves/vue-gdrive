@@ -11,9 +11,8 @@ const mutations = {
   [SET_COLLABORATORS] (state, collaborators) {
     state.users = collaborators
   },
-  [SET_CURSORS] (state, cursors) {
-    state.cursors = cursors
 
+  [SET_CURSORS] (state, cursors) {
     state.users = state.users.reduce((users, user) => {
       if (cursors[user.sessionId]) {
         user = { ...user, cursor: cursors[user.sessionId] }
