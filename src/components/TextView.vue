@@ -19,22 +19,21 @@ export default {
   computed: {
     ...mapState({
       fileContent: state => state.file.content,
-      storedCursors: state => state.collaborators.cursors
+      collaborators: state => state.collaborators.users
     }),
     cursors () {
-      return Object.keys(this.storedCursors).map((sessionId) => {
-        const collaborator = file.getCollaborator(sessionId)
-        // use fileContent so it will update when the file content changes too.
-        console.log(getCaretCoordinates(this.$el.querySelector('textarea'), this.storedCursors[sessionId]))
-        if (collaborator.color) {
+      return this.collaborators
+        .filter((collaborator) => (typeof collaborator.cursor !== 'undefined' && !collaborator.isMe))
+        .map((collaborator) => {
+          // use fileContent so it will update when the file content changes too.
+          console.log(getCaretCoordinates(this.$el.querySelector('textarea'), collaborator.cursor))
           return {
             color: collaborator.color,
             collaboratorName: collaborator.displayName,
-            position: getCaretCoordinates(this.$el.querySelector('textarea'), this.storedCursors[sessionId]),
+            position: getCaretCoordinates(this.$el.querySelector('textarea'), collaborator.cursor),
             sessionId: collaborator.sessionId
           }
-        }
-      }, this)
+        }, this)
     }
   },
   methods: {

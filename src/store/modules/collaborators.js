@@ -4,8 +4,7 @@ import {
 } from '../mutation-types'
 
 const state = {
-  users: [],
-  cursors: {}
+  users: []
 }
 
 const mutations = {
@@ -14,6 +13,15 @@ const mutations = {
   },
   [SET_CURSORS] (state, cursors) {
     state.cursors = cursors
+
+    state.users = state.users.reduce((users, user) => {
+      if (cursors[user.sessionId]) {
+        user = { ...user, cursor: cursors[user.sessionId] }
+      }
+
+      users.push(user)
+      return users
+    }, [])
   }
 }
 
