@@ -2,13 +2,18 @@
 	<div class="mdl-layout__drawer">
 
       <span class="mdl-layout-title">
-        
+
       </span>
       <nav class="mdl-navigation">
-        <profile-menu></profile-menu>
-        <a class="mdl-navigation__link" id="new-file-button" @click="newFile()">New</a>
-        <a class="mdl-navigation__link" id="open-file-button" @click="openFile()">Open...</a>
-        <a class="mdl-navigation__link" id="share-button" @click="openShare()">Share...</a>
+        <a class="mdl-navigation__link" id="new-file-button" @click="newFile()">
+          <i class="material-icons">insert_drive_file</i> New file
+        </a>
+        <a class="mdl-navigation__link" id="open-file-button" @click="openFile()">
+          <i class="material-icons">folder_open</i> Open...
+        </a>
+        <a class="mdl-navigation__link" id="share-button" @click="openShare()">
+          <i class="material-icons">share</i> Share...
+        </a>
       </nav>
     </div>
 </template>

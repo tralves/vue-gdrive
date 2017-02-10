@@ -23,9 +23,10 @@ class GApiIntegration {
               gapi.client.load('drive', 'v3'),
               gapi.client.load('plus', 'v1'),
               gapi.load('picker'),
-              gapi.load('drive-share')])
+              gapi.load('drive-share'),
+              gapi.load('drive-realtime')])
               .then(() => {
-                console.info('gapi.client.load finished!!')
+                console.info('gapi.client.load finished!')
                 resolve()
               })
           } else {
@@ -152,10 +153,71 @@ class GApiIntegration {
         })
 
         resolve(Promise.all([metadataRequest, contentRequest]))
-      }).then(function (responses) {
+      }).then((responses) => {
         return {metadata: responses[0].result, content: responses[1].body}
       })
   };
+
+  loadRtDoc (file, contentEventHandler, filenameEventHandler, collaboratorEventHandler, cursorsMapEventHandler) {
+    var that = this
+    return new Promise(
+      (resolve, reject) => {
+        gapi.drive.realtime.load(file.metadata.id,
+          (doc) => {
+            console.log('loaded realtime doc', doc)
+            // Get the field named "text" in the root map.
+            that.contentText = doc.getModel().getRoot().get('content')
+            that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, contentEventHandler)
+            that.contentText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, contentEventHandler)
+
+            that.filenameText = doc.getModel().getRoot().get('filename')
+            that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, filenameEventHandler)
+            that.filenameText.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, filenameEventHandler)
+
+            // collaborators
+            doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_JOINED, collaboratorEventHandler)
+            doc.addEventListener(gapi.drive.realtime.EventType.COLLABORATOR_LEFT, collaboratorEventHandler)
+            collaboratorEventHandler({target: doc, type: 'init_collaborators'})
+
+            // cursors map
+            that.cursorsMap = doc.getModel().getRoot().get('cursors')
+            that.cursorsMap.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, cursorsMapEventHandler)
+
+            resolve(doc.getModel())
+          },
+          (model) => {
+            console.log('initializing model', model)
+
+            var contentString = model.createString(file.content)
+            model.getRoot().set('content', contentString)
+
+            var filenameString = model.createString(file.content)
+            model.getRoot().set('filename', filenameString)
+
+            that.cursorsMap = model.createMap()
+            model.getRoot().set('cursors', that.cursorsMap)
+          },
+          (error) => {
+            console.log('failed realtime load', error)
+            if (error.type === window.gapi.drive.realtime.ErrorType.TOKEN_REFRESH_REQUIRED) {
+              this.authorize(true)
+                .then(() => {
+                  this.loadRtDoc(file, contentEventHandler, filenameEventHandler, collaboratorEventHandler, cursorsMapEventHandler)
+                })
+                .catch(() => {
+                  reject('Could not authorize')
+                })
+            } else if (error.type === window.gapi.drive.realtime.ErrorType.CLIENT_ERROR) {
+              reject('An Error happened: ' + error.message)
+            } else if (error.type === window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
+              reject('The file was not found. It does not exist or you do not have read access to the file.')
+            } else if (error.type === window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
+              reject('You do not have access to this file. Try having the owner share it with you from Google Drive.')
+              window.location.href = '/'
+            }
+          })
+      })
+  }
 
   /**
    * Displays the Drive file picker configured for selecting text files

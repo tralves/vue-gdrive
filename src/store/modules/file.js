@@ -4,7 +4,10 @@ import {
   FILE_SAVED,
   FILE_SAVING,
   FILE_NOT_SAVED,
+  FILE_DIRTY,
   EDIT_CONTENT,
+  INSERT_CONTENT,
+  DELETE_CONTENT,
   RENAME_FILE,
   LOAD_FILE
 } from '../mutation-types'
@@ -49,14 +52,26 @@ const mutations = {
     state.status = STATUS_LIST.SAVING
   },
 
+  [FILE_DIRTY] (state) {
+    state.status = STATUS_LIST.DIRTY
+  },
+
   [EDIT_CONTENT] (state, content) {
     state.content = content
-    state.status = STATUS_LIST.DIRTY
+  },
+
+  [INSERT_CONTENT] (state, {index, text}) {
+    const content = state.content
+    state.content = content.slice(0, index) + text + content.slice(index)
+  },
+
+  [DELETE_CONTENT] (state, { index, text }) {
+    const content = state.content
+    state.content = content.slice(0, index) + content.slice(index + text.length)
   },
 
   [RENAME_FILE] (state, filename) {
     state.metadata.name = filename
-    state.status = STATUS_LIST.DIRTY
   },
 
   [LOAD_FILE] (state, file) {

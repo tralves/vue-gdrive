@@ -9,16 +9,10 @@ var CreateNewFileDialogInjector = require('!!vue?inject!src/components/CreateNew
 var createNewFileStub = sinon.stub()
 var openFromGDriveStub = sinon.stub().returns(Promise.resolve())
 var CreateNewFileDialog = CreateNewFileDialogInjector({
-  'vuex': {
-    mapActions: function () {
-      return {
-        createNewFile: createNewFileStub
-      }
-    }
-  },
   'src/services': {
     file: {
-      openFromGDrive: openFromGDriveStub
+      openFromGDrive: openFromGDriveStub,
+      createNewFile: createNewFileStub
     }
   }
 })

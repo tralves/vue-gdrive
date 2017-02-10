@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import gdriveSvg from 'src/assets/google-drive.svg'
 import { file } from 'src/services'
 
@@ -21,17 +20,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'createNewFile',
-      'loadFile'
-    ]),
     openDialog () {
       this.filename = 'New document'
       this.$refs.create_new_file.open()
     },
     createNew () {
       this.$refs.create_new_file.close()
-      this.createNewFile(this.$el.querySelector('#create-filename-input').value)
+      file.createNewFile(this.$el.querySelector('#create-filename-input').value)
     },
     openFromGDrive () {
       file.openFromGDrive()

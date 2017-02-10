@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import file from './modules/file'
+import collaborators from './modules/collaborators'
 import * as actions from './actions'
 
 Vue.use(Vuex)
@@ -13,7 +14,8 @@ export default new Vuex.Store({
   actions,
   // combine sub modules
   modules: {
-    file
+    file,
+    collaborators
   },
   strict: debug
 })
