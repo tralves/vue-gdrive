@@ -4,7 +4,7 @@
         <!-- Title -->
         <i class="material-icons">insert_drive_file</i>
         <input class='filename' contenteditable="true" @blur='rename' :value='fileName' ref="filename"/>
-        <span class="filestatus">{{ fileStatus }}</span>
+        <span class="filestatus">{{ fileStatus }} {{ savedMoment }}</span>
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <collaborator v-for="collaborator in collaborators" v-bind:collaborator="collaborator">
@@ -31,6 +31,12 @@ export default {
   components: {
     Collaborator
   },
+  data: () => {
+    return {
+      showSavedMoment: false,
+      now: Date.now()
+    }
+  },
   computed: {
     fileName () {
       if (this && this.$refs.filename) {
@@ -42,7 +48,7 @@ export default {
       switch (this.$store.state.file.status) {
         case STATUS_LIST.INTIAL: return 'New file'
         case STATUS_LIST.SAVING: return 'Saving...'
-        case STATUS_LIST.SAVED: return 'Saved ' + moment(this.$store.state.file.metadata.modifiedTime).fromNow()
+        case STATUS_LIST.SAVED: return 'Saved ' + moment(this.$store.state.file.metadata.modifiedTime).from(this.now)
         case STATUS_LIST.NOT_SAVED: return 'Could not save to drive'
         case STATUS_LIST.DIRTY: return 'Saving...'
       }
@@ -78,6 +84,10 @@ export default {
     this.$nextTick(() => {
       autosizeInput(this.$refs.filename)
     })
+
+    setInterval(() => {
+      this.now = new Date()
+    }, 1000)
   }
 }
 </script>
