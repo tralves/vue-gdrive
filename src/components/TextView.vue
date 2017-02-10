@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="textarea-container">
     <textarea :value="fileContent" @input="inputContent($event)" @keyup="carretMoved($event)" @click="carretMoved($event)"></textarea>
     <collaborator-cursor v-for="cursor in cursors" v-bind:cursor="cursor"></collaborator-cursor>
   </div>
@@ -26,14 +26,26 @@ export default {
         .filter((collaborator) => (typeof collaborator.cursor !== 'undefined' && !collaborator.isMe))
         .map((collaborator) => {
           // use fileContent so it will update when the file content changes too.
-          console.log(getCaretCoordinates(this.$el.querySelector('textarea'), collaborator.cursor))
+          const position = this.$el
+            ? getCaretCoordinates(this.$el.querySelector('textarea'), collaborator.cursor)
+            : { top: 0, left: 0 }
           return {
             color: collaborator.color,
             collaboratorName: collaborator.displayName,
-            position: getCaretCoordinates(this.$el.querySelector('textarea'), collaborator.cursor),
+            position: position,
             sessionId: collaborator.sessionId
           }
         }, this)
+    }
+  },
+  watch: {
+    fileContent (fileContent) {
+      this.$nextTick(() => {
+        const me = this.collaborators.find(collaborator => collaborator.isMe)
+        if (me && me.cursor) {
+          this.$el.querySelector('textarea').setSelectionRange(me.cursor, me.cursor)
+        }
+      })
     }
   },
   methods: {
@@ -41,7 +53,6 @@ export default {
       this.editContent(event.target.value)
     },
     carretMoved (event) {
-      console.log('carret pos: ' + event.target.selectionStart)
       file.moveCursor(event.target.selectionStart)
     },
     ...mapActions([
@@ -51,16 +62,27 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import '../styles/globals';
 
   div {
     position: relative;
   }
 
+  div.textarea-container {
+    height:100%;
+  }
+
   textarea {
     background: white;
     width: 100%;
-    min-height: 500px;
+    height: 100%;
     position: absolute;
+
+    resize: none;
+    border: 1px solid $primary-color;
+    font-size: 14px;
+    font-family: monospace;
+    outline: none;
   }
 </style>

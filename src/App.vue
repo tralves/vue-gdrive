@@ -7,12 +7,8 @@
       <div class="page-content">
 
         <div class="mdl-grid">
-          <div class="mdl-cell mdl-cell--2-col" id="left-tools">
-          </div>
-          <div class="mdl-cell mdl-cell--8-col" id="text-view">
+          <div class="mdl-cell mdl-cell--8-col mdl-cell--2-offset-desktop" id="text-view">
             <text-view></text-view>
-          </div>
-          <div class="mdl-cell mdl-cell--2-col" id="right-tools">
           </div>
         </div>
 
@@ -21,6 +17,9 @@
           <template slot="actions">
             <mdl-button primary @click.native="handleAuthClick">Login</mdl-button>
           </template>
+        </mdl-dialog>
+        <mdl-dialog @close="closeErrorMessageCallback" ref="errorMessage" title=":(">
+          <p>{{ errorMessage }}</p>
         </mdl-dialog>
         <pre id="output"></pre>
       </div>
@@ -52,7 +51,8 @@ export default {
   data: function () {
     return {
       user: null,
-      file: null
+      file: null,
+      errorMessage: ''
     }
   },
   mounted: function () {
@@ -101,6 +101,10 @@ export default {
       // if no file id in URL, open create dialog
       if (this.file) {
         file.loadFromGDrive(this.file)
+          .catch((error) => {
+            this.errorMessage = error
+            this.$refs.errorMessage.open()
+          })
       } else {
         this.openCreateNewFile()
       }
@@ -108,13 +112,23 @@ export default {
 
     openCreateNewFile () {
       this.$refs.create_new_file.openDialog()
+    },
+
+    closeErrorMessageCallback () {
+      window.location('/')
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style>
 
+main,
+main div.page-content,
+main div.page-content div.mdl-grid {
+  height: 100%;
+  box-sizing: border-box;
+}
 
 </style>
 

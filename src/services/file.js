@@ -78,11 +78,14 @@ export const file = {
                 store.dispatch('updateContent', GapiIntegration.contentText.getText())
                 resolve(file)
               })
-              .catch(() => {
-                reject('rt file not loaded')
+              .catch((error) => {
+                reject(error)
               })
           })
-          .catch(() => reject('not loaded'))
+          .catch((error) => {
+            console.error(error)
+            reject(error.result.error.message)
+          })
       })
   },
 
