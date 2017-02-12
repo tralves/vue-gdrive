@@ -210,7 +210,7 @@ class GApiIntegration {
             } else if (error.type === window.gapi.drive.realtime.ErrorType.CLIENT_ERROR) {
               reject('An Error happened: ' + error.message)
             } else if (error.type === window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
-              reject('The file was not found. It does not exist or you do not have read access to the file.')
+              reject('The file does not exist or you do not have permissions to access it.')
             } else if (error.type === window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
               reject('You do not have access to this file. Try having the owner share it with you from Google Drive.')
               window.location.href = '/'
