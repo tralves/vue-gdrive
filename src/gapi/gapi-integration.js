@@ -7,8 +7,7 @@ class GApiIntegration {
   constructor () {
     this.CLIENT_ID = process.env.CLIENT_ID
     this.SCOPES = ['email', 'profile', 'https://www.googleapis.com/auth/drive',
-      'https://www.googleapis.com/auth/drive.install',
-      'https://www.googleapis.com/auth/plus.login']
+      'https://www.googleapis.com/auth/drive.install']
 
     this.DEFAULT_FIELDS = 'capabilities(canCopy,canEdit),createdTime,fileExtension,id,mimeType,modifiedTime,name,shared,size,version'
   }
@@ -21,7 +20,6 @@ class GApiIntegration {
           if (gapi && gapi.client) {
             Promise.all([
               gapi.client.load('drive', 'v3'),
-              gapi.client.load('plus', 'v1'),
               gapi.load('picker'),
               gapi.load('drive-share'),
               gapi.load('drive-realtime')])
@@ -54,7 +52,7 @@ class GApiIntegration {
               resolve()
             } else {
               console.info('rejected!')
-              reject()
+              reject('Sorry, you are not allowed to open the file...')
             }
           }
         )
@@ -80,12 +78,6 @@ class GApiIntegration {
       request.authuser = -1
     }
     return request
-  }
-
-  getUserProfile () {
-    return gapi.client.plus.people.get({
-      'userId': 'me'
-    })
   }
 
   saveFile (file, filename) {

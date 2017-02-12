@@ -3,7 +3,7 @@
       <div class="mdl-layout__header-row">
         <!-- Title -->
         <i class="material-icons">insert_drive_file</i>
-        <input class='filename' contenteditable="true" @blur='rename' :value='fileName' ref="filename"/>
+        <input class='filename' @input='rename' :value='fileName' ref="filename"/>
         <span class="filestatus">{{ fileStatus }} {{ savedMoment }}</span>
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
@@ -72,6 +72,7 @@ export default {
     ]),
 
     rename (e) {
+      console.log('rename to: ' + e.target.value)
       this.renameFile(e.target.value)
     },
 
