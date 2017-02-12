@@ -20,6 +20,9 @@
         </mdl-dialog>
         <mdl-dialog @close="closeErrorMessageCallback" ref="errorMessage" title=":(">
           <p>{{ errorMessage }}</p>
+          <template slot="actions">
+            <mdl-button primary @click.native="tryAgain()">Try again</mdl-button>
+          </template>
         </mdl-dialog>
         <pre id="output"></pre>
       </div>
@@ -37,7 +40,6 @@ import CreateNewFileDialog from './components/CreateNewFileDialog'
 import TextView from './components/TextView'
 import ProfileMenu from './components/menu/ProfileMenu'
 import GapiIntegration from './gapi/gapi-integration'
-import user from './stores/user'
 import { file } from 'src/services'
 
 export default {
@@ -65,8 +67,7 @@ export default {
         console.log('starting authorize')
         GapiIntegration.authorize(true, this.user)
           .then(() => {
-            this.loadUserData()
-            this.loadThisFile()
+            return this.loadThisFile()
           })
           .catch((reason) => {
             console.log('error inload or authorize')
@@ -79,28 +80,19 @@ export default {
       this.$refs.login.close()
       GapiIntegration.authorize(false, this.user)
         .then(() => {
-          this.loadUserData()
           this.loadThisFile()
         })
-    },
-
-    loadUserData () {
-      console.log('load userData')
-      GapiIntegration.getUserProfile().then((resp) => {
-        console.log(resp)
-        user.setUser({
-          name: resp.result.displayName,
-          image: resp.result.image.url,
-          email: resp.result.emails[0].value
+        .catch((reason) => {
+          this.errorMessage = reason
+          this.$refs.errorMessage.open()
         })
-      })
     },
 
     loadThisFile () {
       console.log('load file')
       // if no file id in URL, open create dialog
       if (this.file) {
-        file.loadFromGDrive(this.file)
+        return file.loadFromGDrive(this.file)
           .catch((error) => {
             this.errorMessage = error
             this.$refs.errorMessage.open()
@@ -116,6 +108,10 @@ export default {
 
     closeErrorMessageCallback () {
       window.location('/')
+    },
+
+    tryAgain () {
+      window.location.reload()
     }
   }
 }

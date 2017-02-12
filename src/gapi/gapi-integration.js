@@ -7,8 +7,7 @@ class GApiIntegration {
   constructor () {
     this.CLIENT_ID = process.env.CLIENT_ID
     this.SCOPES = ['email', 'profile', 'https://www.googleapis.com/auth/drive',
-      'https://www.googleapis.com/auth/drive.install',
-      'https://www.googleapis.com/auth/plus.login']
+      'https://www.googleapis.com/auth/drive.install']
 
     this.DEFAULT_FIELDS = 'capabilities(canCopy,canEdit),createdTime,fileExtension,id,mimeType,modifiedTime,name,shared,size,version'
   }
@@ -21,7 +20,6 @@ class GApiIntegration {
           if (gapi && gapi.client) {
             Promise.all([
               gapi.client.load('drive', 'v3'),
-              gapi.client.load('plus', 'v1'),
               gapi.load('picker'),
               gapi.load('drive-share'),
               gapi.load('drive-realtime')])
@@ -54,7 +52,7 @@ class GApiIntegration {
               resolve()
             } else {
               console.info('rejected!')
-              reject()
+              reject('Sorry, you are not allowed to open the file...')
             }
           }
         )
@@ -80,12 +78,6 @@ class GApiIntegration {
       request.authuser = -1
     }
     return request
-  }
-
-  getUserProfile () {
-    return gapi.client.plus.people.get({
-      'userId': 'me'
-    })
   }
 
   saveFile (file, filename) {
@@ -210,7 +202,7 @@ class GApiIntegration {
             } else if (error.type === window.gapi.drive.realtime.ErrorType.CLIENT_ERROR) {
               reject('An Error happened: ' + error.message)
             } else if (error.type === window.gapi.drive.realtime.ErrorType.NOT_FOUND) {
-              reject('The file was not found. It does not exist or you do not have read access to the file.')
+              reject('The file does not exist or you do not have permissions to access it.')
             } else if (error.type === window.gapi.drive.realtime.ErrorType.FORBIDDEN) {
               reject('You do not have access to this file. Try having the owner share it with you from Google Drive.')
               window.location.href = '/'

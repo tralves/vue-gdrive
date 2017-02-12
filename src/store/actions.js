@@ -86,5 +86,5 @@ export const setCursors = ({commit, state}, cursors) => {
 function updateWindowUrl (fileMetadata) {
   let queryVars = qs.parse(window.location.search)
   queryVars.file = fileMetadata.id
-  window.history.pushState({}, fileMetadata.name, '/' + qs.stringify(queryVars, true))
+  window.history.pushState({}, fileMetadata.name, (window.location.pathname || '') + qs.stringify(queryVars, true))
 }
