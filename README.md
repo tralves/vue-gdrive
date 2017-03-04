@@ -6,6 +6,8 @@ If you want to build a VueJS app with Google Drive integration? Start here!
 
 This project is just a text editor written in VueJS uses google drive API for storage, sharing (soon) and realtime colaboration (not yet). Use it as a boilerplate or reference for your awesome project!
 
+This project was the boilerplate for the [Collaborative Markdown Editor](https://github.com/tralves/collaborative-markdown-editor). You can try it [HERE](https://tralves.github.io/collaborative-markdown-editor/).
+
 ## Screenshots
 
 <a href="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg"><img src="https://cloud.githubusercontent.com/assets/2600867/17316208/638acbea-5848-11e6-88f6-c84d63d249de.jpg" width="300" ></a>
