@@ -1,3 +1,9 @@
+# Disclaimer
+
+This project is deprecated beyond repair. Google no longer supports these Google Drive APIs.
+
+You may read the code, maybe it will help you somehow... that's all I can do for you.
+
 # vue-gdrive
 
 > VueJS text editor with Google Drive integration
